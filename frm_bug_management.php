@@ -54,7 +54,7 @@
                                       <td><b> Project Name: </b><?php echo $data['name'];?></td><td><b>Project Status: </b><?php echo $project_status['status_name'];?> </td></tr>
                                     </table>
                                     </div><br><br><br>
-                                <form class='form-horizontal disable-submit' action='save_bug_management.php' method="POST" enctype="multipart/form-data">
+                                <form class='form-horizontal disable-submit' action='save_bug_management1.php' method="POST" enctype="multipart/form-data">
                                     <input type='hidden' name='project_id' value='<?php echo !empty($data)?$data['id']:''; ?>'>
                                     <input type='hidden' name='manager_id' value='<?php echo !empty($data)?$data['manager_id']:''; ?>'>
                                      <div class='form-group'>

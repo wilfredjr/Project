@@ -6,7 +6,7 @@ if(!isLoggedIn())
   die();
 }
 
-if (!AllowUser(array(3, 4)))
+if (!AllowUser(array(4)))
 {
     redirect("../index.php");
 }

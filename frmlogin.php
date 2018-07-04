@@ -8,7 +8,7 @@
 
 	makeHead("Login");
 ?>
-<body background="dist/img/bg2.png" style="background-size:contain;">
+<body background="dist/img/bg3.png" style="background-size:contain;">
     <div class="login-box" >
       <div class="login-box-body" style="border-radius: 10px;border: green 2px solid;margin-top: 190px">
         

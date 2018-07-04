@@ -18,7 +18,7 @@ makeHead("Project Application");
   $job_title=$con->myQuery("SELECT jb.id,jb.description AS name
 		FROM job_title jb WHERE jb.is_deleted='0'")->fetchAll(PDO::FETCH_ASSOC);
 
-  $project_name=$con->myQuery("SELECT id,name  FROM project_application")->fetchAll(PDO::FETCH_ASSOC);
+  $project_name=$con->myQuery("SELECT id,name  FROM project_application WHERE (request_status_id!=4 AND request_status_id!=5)")->fetchAll(PDO::FETCH_ASSOC);
   $project_status=$con->myQuery("SELECT id,status_name  FROM project_status")->fetchAll(PDO::FETCH_ASSOC);
 	
 ?>
@@ -136,7 +136,7 @@ $(function () {
 		},
 		"columnDefs": [{ "orderable": false, "targets": -1},
 		{"sClass": "text-center", "aTargets": [ -1 ]}],
-          "order": [[ 1, "desc" ]]
+          "order": [[ 0, "desc" ]]
 		
 	});
 });

@@ -12,7 +12,14 @@ $manage=AccessForProject($project_id, $employee_id);
   //   redirect("my_projects.php");
   // }
 }
-  $employees=$con->myQuery("SELECT e.id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) as employee_name FROM employees e JOIN departments ON e.department_id=departments.id WHERE e.is_deleted=0 AND e.is_terminated=0 AND (e.utype_id='1' OR e.utype_id='2')")->fetchAll(PDO::FETCH_ASSOC);
+  $project=$con->myQuery("SELECT id, manager_id,team_lead_ba,team_lead_dev FROM projects WHERE id = ".$_GET['id'])->fetch(PDO::FETCH_ASSOC);
+  if($project['manager_id']==$employee_id){
+  $employees=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.last_name) as employee_name FROM employees e WHERE e.is_deleted=0 AND e.is_terminated=0 AND (e.utype_id='1' OR e.utype_id='2')")->fetchAll(PDO::FETCH_ASSOC);}
+  elseif($project['team_lead_ba']==$employee_id){
+    $employees=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.last_name) as employee_name FROM employees e WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='2'")->fetchAll(PDO::FETCH_ASSOC);
+  }elseif($project['team_lead_dev']==$employee_id){
+     $employees=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.last_name) as employee_name FROM employees e WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='1'")->fetchAll(PDO::FETCH_ASSOC);
+  }
   $proj_req=$con->myQuery("SELECT pr.id, pr.project_id FROM project_requests pr WHERE pr.project_id = ".$_GET['id']);
   $designation=$con->myQuery("SELECT id, name FROM project_designation")->fetchAll(PDO::FETCH_ASSOC);
   $manager_id=$con->myQuery("SELECT id, manager_id FROM projects WHERE id = ".$_GET['id'])->fetch(PDO::FETCH_ASSOC);

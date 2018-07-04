@@ -29,8 +29,12 @@ $columns = array(
     array( 'db' => 'date_end','dt' => ++$index ,'formatter'=>function($d,$row){
           return htmlspecialchars($d);
     }),
-    array( 'db' => 'manager','dt' => ++$index ,'formatter'=>function($d,$row){
-          return htmlspecialchars($d);
+    array( 'db' => 'step_id','dt' => ++$index ,'formatter'=>function($d,$row){
+        if($row['step_id']=='2'){
+          return htmlspecialchars($row['manager']);
+        }elseif($row['step_id']=='3'){
+            return htmlspecialchars($row['admin']);
+        }
     }),
     array( 'db' => 'worked_done','dt' => ++$index ,'formatter'=>function($d,$row){
           return nl2br($d);
@@ -39,7 +43,7 @@ $columns = array(
         return htmlspecialchars($d);
     }),
     array( 'db' => 'reason','dt' => ++$index ,'formatter'=>function($d,$row){
-          return htmlspecialchars($d);
+          return nl2br($d);
     }),
       array(
         'db'        => 'id',
@@ -163,8 +167,9 @@ JOIN project_phases pp ON pt.project_phase_id=pp.id";
 
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT pt.id,pt.reason,pt.worked_done,p.name AS project_name, pt.project_id,pt.request_status_id,pp.phase_name, rs.name AS request_status, pt.date_filed,date_start,date_end,
+$complete_query="SELECT pt.id,pt.reason,pt.worked_done,p.name AS project_name,pt.step_id, pt.project_id,pt.request_status_id,pp.phase_name, rs.name AS request_status, pt.date_filed,date_start,date_end,
 (SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pt.manager_id) AS manager,
+(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pt.admin_id) AS admin,
 (SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pt.employee_id) AS employee
 FROM project_task pt {$join_query} {$where} {$order} {$limit}";
             // echo $complete_query;

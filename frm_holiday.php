@@ -5,7 +5,7 @@ if (!isLoggedIn()) {
         die();
 }
 
-if (!AllowUser(array(1,4))) {
+if (!AllowUser(array(4))) {
         redirect("index.php");
 }
 
@@ -66,7 +66,7 @@ if (!empty($_GET['id'])) {
                             <input type="text" class="form-control date_picker" id="holiday_date" name='holiday_date' value='<?php echo !empty($data)?htmlspecialchars($data['holiday_date']):''; ?>' required>
                           </div>
                       </div>
-
+<!-- 
                       <div class='form-group'>
                           <label for="approver" class="col-sm-2 control-label"> Holiday Category *</label>
                           <div class='col-sm-9 '>
@@ -76,7 +76,7 @@ if (!empty($_GET['id'])) {
                                         <option value="Special Holiday">Special Holiday</option>
                                     </select>
                           </div>
-                      </div>
+                      </div> -->
 <!-- 
                       <div class='form-group'>
                           <label for="approver" class="col-sm-2 control-label"> Pay Group *</label>
@@ -95,8 +95,8 @@ if (!empty($_GET['id'])) {
 
                         <div class="form-group">
                           <div class="col-sm-10 col-md-offset-2 text-center">
-                            <a href='holidays.php' class='btn btn-default' onclick="return confirm('<?php echo empty($data)?"Cancel creation of new holiday?":"Candel modification of holiday?" ?>')">Cancel</a>
                             <button type='submit' class='btn btn-warning'>Save </button>
+                            <a href='holidays.php' class='btn btn-default' onclick="return confirm('<?php echo empty($data)?"Cancel creation of new holiday?":"Candel modification of holiday?" ?>')">Cancel</a>
                           </div>
                         </div>
                     </form> 

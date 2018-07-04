@@ -1,6 +1,6 @@
 /*
-SQLyog Community v12.5.0 (64 bit)
-MySQL - 10.1.21-MariaDB : Database - project_monitoring
+SQLyog Community v12.5.1 (64 bit)
+MySQL - 10.1.16-MariaDB : Database - project_monitoring
 *********************************************************************
 */
 
@@ -19969,6 +19969,45 @@ insert  into `attendance`(`id`,`employees_id`,`in_time`,`out_time`,`note`,`Statu
 (12273,1,'2017-08-05 13:00:00','2017-08-06 03:30:00',NULL,NULL),
 (12274,1,'2017-08-06 09:30:00','0000-00-00 00:00:00',NULL,NULL);
 
+/*Table structure for table `bug_files` */
+
+DROP TABLE IF EXISTS `bug_files`;
+
+CREATE TABLE `bug_files` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) NOT NULL,
+  `file_location` varchar(255) NOT NULL,
+  `date_modified` date NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `bug_list_id` bigint(20) NOT NULL,
+  `project_id` bigint(20) NOT NULL,
+  `bug_request_id` bigint(20) NOT NULL,
+  `is_deleted` tinyint(4) NOT NULL DEFAULT '0',
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+
+/*Data for the table `bug_files` */
+
+insert  into `bug_files`(`id`,`file_name`,`file_location`,`date_modified`,`employee_id`,`bug_list_id`,`project_id`,`bug_request_id`,`is_deleted`) values 
+(1,'Fertilizer.docx','1.docx','2018-01-28',61,1,2,0,0),
+(2,'Doc4.docx','2.docx','2018-01-28',57,1,2,1,1),
+(3,'mall.1.png','3.png','2018-01-28',57,1,2,2,1),
+(4,'doctor.jpg','4.jpg','2018-01-28',57,1,2,3,1),
+(5,'farmer.png','5.png','2018-01-28',57,1,2,0,0),
+(6,'rabbit.jpg','6.jpg','2018-01-28',57,1,2,0,0),
+(7,'rabbit.jpg','7.jpg','2018-01-28',57,1,2,4,0),
+(8,'doctor.jpg','8.jpg','2018-01-28',59,1,2,0,0),
+(9,'Nurse.jpg','9.jpg','2018-01-28',59,1,2,6,1),
+(10,'doctor.jpg','10.jpg','2018-01-28',59,1,2,7,1),
+(11,'doctor.jpg','11.jpg','2018-01-28',59,1,2,8,0),
+(12,'doctor.jpg','12.jpg','2018-01-28',57,1,2,9,0),
+(13,'doctor.jpg','13.jpg','2018-01-28',59,1,2,10,0),
+(14,'teacher.png','14.png','2018-01-28',59,1,2,0,0),
+(15,'Nurse.jpg','15.jpg','2018-01-28',59,1,2,0,0),
+(16,'doctor.jpg','16.jpg','2018-01-28',59,1,2,11,0),
+(17,'teacher.png','17.png','2018-01-28',57,1,2,12,0),
+(18,'teacher.png','18.png','2018-01-28',59,1,2,13,0);
+
 /*Table structure for table `certifications` */
 
 DROP TABLE IF EXISTS `certifications`;
@@ -19997,36 +20036,78 @@ insert  into `certifications`(`id`,`name`,`description`,`is_deleted`) values
 DROP TABLE IF EXISTS `comments`;
 
 CREATE TABLE `comments` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `message` varchar(255) NOT NULL,
   `sender_id` bigint(20) NOT NULL,
   `receiver_id` bigint(20) NOT NULL,
   `date_sent` datetime NOT NULL,
   `request_type` varchar(255) NOT NULL,
-  `request_id` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `request_id` bigint(20) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=latin1;
 
 /*Data for the table `comments` */
 
 insert  into `comments`(`id`,`message`,`sender_id`,`receiver_id`,`date_sent`,`request_type`,`request_id`) values 
-(0,'Para san to?',58,1,'2017-10-19 14:21:51','project_approval_emp',18),
-(0,'test?',58,1,'2017-10-19 14:47:57','project_approval_emp',19),
-(0,'tetst',58,1,'2017-10-19 14:48:59','project_approval_emp',20),
-(0,'yes',1,58,'2017-10-19 14:51:07','project_approval_emp',20),
-(0,'bakit?',56,58,'2017-10-19 15:44:26','project_approval_emp',24),
-(0,'uwian na',58,56,'2017-10-19 15:45:04','project_approval_emp',24),
-(0,'wat',1,56,'2017-11-14 16:05:58','project_approval_emp',16),
-(0,'heya',56,1,'2017-11-14 16:10:58','project_approval_emp',16),
-(0,'sup',1,56,'2017-11-14 16:11:44','project_approval_emp',16),
-(0,'DUDDE!',56,1,'2017-11-14 16:12:23','project_approval_emp',16),
-(0,'water',56,1,'2017-11-15 17:16:26','project_approval_phase',1),
-(0,'wat?',1,0,'2017-11-15 17:18:46','project_approval_phase',1),
-(0,'wat?',56,1,'2017-11-15 17:20:54','project_approval_emp',27),
-(0,'hahaha',1,56,'2017-11-15 17:21:22','project_approval_emp',27),
-(0,'Wat',56,1,'2017-12-29 15:14:03','project_approval_phase',4),
-(0,'yeah',1,0,'2017-12-29 15:14:15','project_approval_phase',4),
-(0,'wat',58,1,'2017-12-30 19:06:45','project_approval_phase',1),
-(0,'haha',1,0,'2017-12-30 19:07:01','project_approval_phase',1);
+(1,'Para san to?',58,1,'2017-10-19 14:21:51','project_approval_emp',18),
+(2,'test?',58,1,'2017-10-19 14:47:57','project_approval_emp',19),
+(3,'tetst',58,1,'2017-10-19 14:48:59','project_approval_emp',20),
+(4,'yes',1,58,'2017-10-19 14:51:07','project_approval_emp',20),
+(5,'bakit?',56,58,'2017-10-19 15:44:26','project_approval_emp',24),
+(6,'uwian na',58,56,'2017-10-19 15:45:04','project_approval_emp',24),
+(7,'wat',1,56,'2017-11-14 16:05:58','project_approval_emp',16),
+(8,'heya',56,1,'2017-11-14 16:10:58','project_approval_emp',16),
+(9,'sup',1,56,'2017-11-14 16:11:44','project_approval_emp',16),
+(10,'DUDDE!',56,1,'2017-11-14 16:12:23','project_approval_emp',16),
+(11,'water',56,1,'2017-11-15 17:16:26','project_approval_phase',1),
+(12,'wat?',1,0,'2017-11-15 17:18:46','project_approval_phase',1),
+(13,'wat?',56,1,'2017-11-15 17:20:54','project_approval_emp',27),
+(14,'hahaha',1,56,'2017-11-15 17:21:22','project_approval_emp',27),
+(15,'Wat',56,1,'2017-12-29 15:14:03','project_approval_phase',4),
+(16,'yeah',1,0,'2017-12-29 15:14:15','project_approval_phase',4),
+(17,'wat',58,1,'2017-12-30 19:06:45','project_approval_phase',1),
+(18,'haha',1,0,'2017-12-30 19:07:01','project_approval_phase',1),
+(19,'awd',56,1,'2018-01-18 14:12:29','task_management_approval',3),
+(20,'wat?\r\n',58,1,'2018-01-18 14:15:24','project_approval_phase',12),
+(21,'asdsa',1,56,'2018-01-18 14:51:56','task_management_approval',3),
+(22,'yes',1,0,'2018-01-18 14:57:26','project_approval_phase',12),
+(23,'awdwad',56,1,'2018-01-18 14:58:38','task_management_approval',3),
+(24,'klhghgu',1,0,'2018-01-18 14:58:48','task_management_approval',3),
+(25,'finally',56,1,'2018-01-18 15:07:58','task_management_approval',3),
+(26,'yea',1,0,'2018-01-18 15:08:09','task_management_approval',3),
+(37,'Heya',56,1,'2018-01-21 23:52:43','task_completion_approval',1),
+(38,'wat',56,1,'2018-01-21 23:54:45','task_completion_approval',1),
+(39,'wter',56,1,'2018-01-21 23:56:56','task_completion_approval',1),
+(41,'Heya 2',1,57,'2018-01-22 00:13:34','task_completion_approval',9),
+(42,'Hi!',1,62,'2018-01-25 16:16:08','project_application_approval',1),
+(43,'Hi!',1,62,'2018-01-25 16:16:48','project_application_approval',1),
+(44,'Heya',62,0,'2018-01-25 16:17:10','project_application_approval',1),
+(45,'What\'s This?',1,62,'2018-01-25 17:46:50','project_application_approval',3),
+(46,'Happy Cup :)',62,0,'2018-01-25 17:47:09','project_application_approval',3),
+(47,'WHat?',62,59,'2018-01-25 21:25:35','project_approval_phase',5),
+(48,'Ok :)',59,0,'2018-01-25 21:26:59','project_approval_phase',5),
+(49,'What?',57,1,'2018-01-26 15:10:53','project_development_approval',1),
+(50,'None :D',1,0,'2018-01-26 15:14:16','project_development_approval',1),
+(51,'What?',62,57,'2018-01-26 16:17:24','project_development_approval',3),
+(52,'Yes',57,0,'2018-01-26 16:17:34','project_development_approval',3),
+(53,'Hi',62,57,'2018-01-26 19:15:51','task_management_approval',1),
+(54,'Yo',57,0,'2018-01-26 19:16:02','task_management_approval',1),
+(55,'wat',1,61,'2018-01-26 22:36:37','bug_application_approval',1),
+(56,'hi',61,0,'2018-01-26 22:36:54','bug_application_approval',1),
+(57,'whats dis?',56,1,'2018-01-27 20:56:18','project_development_approval',1),
+(58,'none\r\n',1,0,'2018-01-27 20:56:39','project_development_approval',1),
+(59,'Para san to?',1,62,'2018-01-27 22:40:24','project_application_approval',2),
+(60,'Project',62,0,'2018-01-27 22:40:50','project_application_approval',2),
+(61,'yes?',62,59,'2018-01-28 08:54:18','bug_employee_approval',1),
+(62,'hi',59,0,'2018-01-28 08:55:06','bug_employee_approval',1),
+(63,'really?',1,59,'2018-01-28 09:03:43','bug_employee_approval',1),
+(64,'really?',1,0,'2018-01-28 09:03:43','bug_employee_approval',1),
+(65,'really?',1,59,'2018-01-28 09:03:52','bug_employee_approval',1),
+(66,'really?',1,0,'2018-01-28 09:03:52','bug_employee_approval',1),
+(67,'what?',1,59,'2018-01-28 09:04:11','bug_employee_approval',1),
+(68,'ok',59,0,'2018-01-28 09:04:38','bug_employee_approval',1),
+(69,'What?',56,57,'2018-01-28 11:41:33','bug_phase_approval',4),
+(70,'Test',57,0,'2018-01-28 11:41:51','bug_phase_approval',4);
 
 /*Table structure for table `companies` */
 
@@ -20684,18 +20765,21 @@ CREATE TABLE `employees` (
   `w_sss` tinyint(1) DEFAULT '0',
   `w_philhealth` tinyint(1) DEFAULT '0',
   `w_hdmf` tinyint(1) DEFAULT '0',
+  `utype_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
 
 /*Data for the table `employees` */
 
-insert  into `employees`(`id`,`code`,`first_name`,`middle_name`,`last_name`,`nationality`,`birthday`,`gender`,`civil_status`,`sss_no`,`tin`,`philhealth`,`pagibig`,`employment_status_id`,`job_title_id`,`pay_grade_id`,`address1`,`address2`,`city`,`province`,`country`,`postal_code`,`contact_no`,`work_contact_no`,`private_email`,`work_email`,`joined_date`,`department_id`,`supervisor_id`,`is_terminated`,`termination_date`,`basic_salary`,`tax_status_id`,`acu_id`,`bond_date`,`image`,`is_deleted`,`is_regular`,`payroll_group_id`,`regularization_date`,`card_number`,`w_sss`,`w_philhealth`,`w_hdmf`) values 
-(1,'2015-00001','ADMINs','s','SGTSI','Filipino','0000-00-00','Female','Single','123456789','123456789','1234567890','1234567890',8,13,1,'blk 1 lot 2 Kalye streeet','City City Country','Pasig ','PH','PH','1605','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2015-06-03',13,53,0,'2017-02-07',20000,1,'5','1970-01-01','',0,1,2,'2017-05-04',NULL,1,1,1),
-(56,'secret1','secret11','secret11','secret11','admin1','2017-05-29','Male','Single','123456789','123456789','1234567890','1234567890',7,1,1,'blk 1 lot 2 Kalye streeet','City City Country','admin1','admin1','admin1','admin1','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2016-08-01',13,1,0,'0000-00-00',50000,1,'123','2016-01-03','',0,0,1,'2016-01-01','123',1,1,1),
-(57,'secret2','secret2','secret2','secret2','admin2','2017-05-28','Male','Single','123456789','123456789','1234567890','1234567890',7,1,1,'blk 1 lot 2 Kalye streeet','City City Country','admin2','admin2','admin2','123','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2016-08-01',13,1,0,'0000-00-00',50000,8,'123','2018-01-01','',0,0,1,'2018-01-01','123',1,1,1),
-(58,'secret4','secret4','secret4','secret4','admin4','2017-06-03','Male','Single','123456789','123456789','1234567890','1234567890',7,1,1,'blk 1 lot 2 Kalye streeet','City City Country','admin4','admin4','admin4','12312512412313','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2017-05-01',17,1,0,'0000-00-00',28000,1,'3248657462','2017-05-01','',0,0,1,'2017-05-01','586537462351243546',1,1,1),
-(59,'secret3','secret3','secret3','secret3','admin3','2017-05-29','Male','Single','123456789','123456789','1234567890','1234567890',7,1,1,'blk 1 lot 2 Kalye streeet','City City Country','admin3','admin3','admin3','123','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2017-08-01',13,1,0,'0000-00-00',50000,9,'123','2017-01-01','',0,0,1,'2017-08-01','123',1,1,1),
-(60,'secret5','secret5','secret5','secret5','admin5','2017-05-28','Male','Widowed','123456789','123456789','1234567890','1234567890',7,1,1,'blk 1 lot 2 Kalye streeet','City City Country','admin5','admin5','admin5','123','12345678901','12345678901','johnpaul.balderas@sparkglobaltech.com','johnpaul.balderas@sparkglobaltech.com','2017-01-01',13,1,0,'0000-00-00',28000,10,'123','2017-01-01','',0,0,1,'2017-01-01','123',1,1,1);
+insert  into `employees`(`id`,`code`,`first_name`,`middle_name`,`last_name`,`nationality`,`birthday`,`gender`,`civil_status`,`sss_no`,`tin`,`philhealth`,`pagibig`,`employment_status_id`,`job_title_id`,`pay_grade_id`,`address1`,`address2`,`city`,`province`,`country`,`postal_code`,`contact_no`,`work_contact_no`,`private_email`,`work_email`,`joined_date`,`department_id`,`supervisor_id`,`is_terminated`,`termination_date`,`basic_salary`,`tax_status_id`,`acu_id`,`bond_date`,`image`,`is_deleted`,`is_regular`,`payroll_group_id`,`regularization_date`,`card_number`,`w_sss`,`w_philhealth`,`w_hdmf`,`utype_id`) values 
+(1,'2015-00001','ADMIN','s','SGTSI','Filipino','0000-00-00','Female','Single','123456789','123456789','1234567890','1234567890',8,13,0,'blk 1 lot 2 Kalye streeet','City City Country','Pasig ','PH','PH','1605','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2015-06-03',13,53,0,'2017-02-07',20000,1,'5','1970-01-01','',0,1,2,'2017-05-04',NULL,1,1,1,4),
+(56,'secret1','secret11','secret11','secret11','admin1','2017-05-29','Male','Single','123456789','123456789','1234567890','1234567890',7,1,0,'blk 1 lot 2 Kalye streeet','City City Country','admin1','admin1','admin1','admin1','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2016-08-01',13,1,0,'0000-00-00',50000,1,'123','2016-01-03','',0,0,1,'2016-01-01','123',1,1,1,1),
+(57,'secret2','secret2','secret2','secret2','admin2','2017-05-28','Male','Single','123456789','123456789','1234567890','1234567890',7,1,0,'blk 1 lot 2 Kalye streeet','City City Country','admin2','admin2','admin2','123','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2016-08-01',13,1,0,'0000-00-00',50000,8,'123','2018-01-01','',0,0,1,'2018-01-01','123',1,1,1,1),
+(58,'secret4','secret4','secret4','secret4','admin4','2017-06-03','Male','Single','123456789','123456789','1234567890','1234567890',7,1,0,'blk 1 lot 2 Kalye streeet','City City Country','admin4','admin4','admin4','12312512412313','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2017-05-01',17,1,0,'0000-00-00',28000,1,'3248657462','2017-05-01','',0,0,1,'2017-05-01','586537462351243546',1,1,1,1),
+(59,'secret3','secret3','secret3','secret3','admin3','2017-05-29','Male','Single','123456789','123456789','1234567890','1234567890',7,1,0,'blk 1 lot 2 Kalye streeet','City City Country','admin3','admin3','admin3','123','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2017-08-01',13,1,0,'0000-00-00',50000,9,'123','2017-01-01','',0,0,1,'2017-08-01','123',1,1,1,2),
+(60,'secret5','secret5','secret5','secret5','admin5','2017-05-28','Male','Widowed','123456789','123456789','1234567890','1234567890',7,1,0,'blk 1 lot 2 Kalye streeet','City City Country','admin5','admin5','admin5','123','12345678901','12345678901','wilfredribleza@gmail.com','wilfredribleza@gmail.com','2017-01-01',13,1,0,'0000-00-00',28000,10,'123','2017-01-01','',0,0,1,'2017-01-01','123',1,1,1,2),
+(61,'','SGTSI','Account','Manager','','0000-00-00','','','','','','',0,0,0,'','','','','','','','','','','0000-00-00',0,0,0,'0000-00-00',0,0,'','0000-00-00','',0,0,NULL,'0000-00-00',NULL,0,0,0,5),
+(62,'','Manager','S.','Project','','0000-00-00','','','','','','',0,0,1,'','','','','','','','','','','0000-00-00',0,0,0,'0000-00-00',0,0,'','0000-00-00','',0,0,NULL,'0000-00-00',NULL,0,0,0,3);
 
 /*Table structure for table `employees_absents` */
 
@@ -21121,7 +21205,7 @@ CREATE TABLE `employees_half_day` (
 DROP TABLE IF EXISTS `employees_leaves`;
 
 CREATE TABLE `employees_leaves` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `employee_id` bigint(20) NOT NULL,
   `leave_id` bigint(20) NOT NULL,
   `approval_step_id` bigint(20) NOT NULL,
@@ -21135,14 +21219,15 @@ CREATE TABLE `employees_leaves` (
   `date_cancelled` date NOT NULL DEFAULT '0000-00-00',
   `reject_reason` varchar(255) DEFAULT NULL,
   `project_id` bigint(20) DEFAULT NULL,
-  `requestor_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `requestor_id` bigint(20) DEFAULT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `employees_leaves` */
 
 insert  into `employees_leaves`(`id`,`employee_id`,`leave_id`,`approval_step_id`,`comment`,`request_status_id`,`date_start`,`date_end`,`date_filed`,`remark`,`reason`,`date_cancelled`,`reject_reason`,`project_id`,`requestor_id`) values 
 (1,8,1,14,'',1,'2017-08-02','2017-08-02','2017-08-02','','asdasd','0000-00-00',NULL,3,1),
-(0,1,1,14,'',1,'2017-11-14','2017-11-14','2017-11-14','','adasa','0000-00-00',NULL,86,NULL);
+(2,1,1,14,'',1,'2017-11-14','2017-11-14','2017-11-14','','adasa','0000-00-00',NULL,86,NULL);
 
 /*Table structure for table `employees_leaves_date` */
 
@@ -21548,7 +21633,7 @@ CREATE TABLE `holidays` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `payroll_group_id` bigint(20) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 /*Data for the table `holidays` */
 
@@ -21559,7 +21644,10 @@ insert  into `holidays`(`id`,`holiday_name`,`holiday_date`,`holiday_day`,`holida
 (4,'testasd','2017-05-31','Wednesday','Legal Holiday',0,1),
 (5,'test2123123','2017-06-01','Thursday','Special Holiday',1,3),
 (6,'holla','2017-06-15','Thursday','Special Holiday',1,3),
-(17,'test','2017-10-19','Thursday','Legal Holiday',0,0);
+(17,'test','2017-10-19','Thursday','Legal Holiday',0,0),
+(18,'Test','2017-10-19','Thursday','',1,0),
+(19,'One','2017-12-01','Friday','',0,0),
+(20,'One','2017-12-01','Friday','',1,0);
 
 /*Table structure for table `job_title` */
 
@@ -22045,6 +22133,246 @@ insert  into `payroll_settings`(`id`,`pay_group_id`,`salary_settings`,`first_cut
 (4,2,'3','15','30','3','3','3','22','200','2017-12-17',NULL,NULL,NULL),
 (5,9,'1','5','20','1','1','1','22','351','2017-12-31',NULL,NULL,NULL);
 
+/*Table structure for table `project_application` */
+
+DROP TABLE IF EXISTS `project_application`;
+
+CREATE TABLE `project_application` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(225) NOT NULL,
+  `des` varchar(225) NOT NULL,
+  `date_start` date NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `team_lead_ba` bigint(20) NOT NULL,
+  `team_lead_dev` bigint(20) NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_approved` date DEFAULT NULL,
+  `date_cancelled` date DEFAULT NULL,
+  `reason` varchar(225) DEFAULT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_application` */
+
+insert  into `project_application`(`id`,`name`,`des`,`date_start`,`employee_id`,`team_lead_ba`,`team_lead_dev`,`request_status_id`,`date_filed`,`date_approved`,`date_cancelled`,`reason`) values 
+(1,'RTU','Test Data','2018-01-29',62,59,56,2,'2018-01-27','2018-01-27',NULL,NULL),
+(2,'Nomosla','Clothing line','2018-01-29',62,59,56,2,'2018-01-27','2018-01-27',NULL,NULL),
+(3,'Uncrowned','uncrowned ph','2018-01-29',62,59,56,2,'2018-01-28','2018-01-28',NULL,NULL),
+(4,'Test 1','tets','2018-01-29',62,59,56,2,'2018-01-28','2018-01-28',NULL,NULL),
+(5,'Test 1','tets','2018-01-29',62,59,56,4,'2018-01-28',NULL,NULL,'bbbbb'),
+(6,'bloons system','bloons inventory','2018-01-29',62,59,56,2,'2018-01-29','2018-01-29',NULL,NULL);
+
+/*Table structure for table `project_bug_application` */
+
+DROP TABLE IF EXISTS `project_bug_application`;
+
+CREATE TABLE `project_bug_application` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `name` varchar(225) NOT NULL,
+  `description` varchar(225) NOT NULL,
+  `bug_rate_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `team_lead_ba` bigint(20) NOT NULL,
+  `team_lead_dev` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `date_approved` date NOT NULL,
+  `reason` varchar(225) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_application` */
+
+insert  into `project_bug_application`(`id`,`project_id`,`name`,`description`,`bug_rate_id`,`employee_id`,`request_status_id`,`team_lead_ba`,`team_lead_dev`,`admin_id`,`manager_id`,`date_filed`,`date_cancelled`,`date_approved`,`reason`) values 
+(1,2,'Bug Number 1','wat',2,61,2,59,56,1,62,'2018-01-28','0000-00-00','2018-01-28','');
+
+/*Table structure for table `project_bug_deficit` */
+
+DROP TABLE IF EXISTS `project_bug_deficit`;
+
+CREATE TABLE `project_bug_deficit` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `bug_list_id` bigint(20) NOT NULL,
+  `bug_phase_id` bigint(20) NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `done_days` varchar(255) NOT NULL,
+  `done_hours` varchar(255) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_deficit` */
+
+/*Table structure for table `project_bug_employee` */
+
+DROP TABLE IF EXISTS `project_bug_employee`;
+
+CREATE TABLE `project_bug_employee` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `bug_list_id` bigint(20) NOT NULL,
+  `project_id` bigint(20) NOT NULL,
+  `bug_name` varchar(225) NOT NULL,
+  `bug_desc` varchar(225) NOT NULL,
+  `bug_rate_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `requested_by` bigint(20) NOT NULL,
+  `designation_id` bigint(20) NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_approved` date NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `admin_id` binary(1) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
+  `reason` varchar(225) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_employee` */
+
+insert  into `project_bug_employee`(`id`,`bug_list_id`,`project_id`,`bug_name`,`bug_desc`,`bug_rate_id`,`employee_id`,`requested_by`,`designation_id`,`request_status_id`,`date_filed`,`date_approved`,`date_cancelled`,`manager_id`,`admin_id`,`step_id`,`reason`) values 
+(1,1,2,'Bug Number 1','wat',2,59,59,2,2,'2018-01-28','2018-01-28','2018-01-28',62,'1',3,'water'),
+(4,1,2,'Bug Number 1','wat',2,56,56,1,4,'2018-01-28','0000-00-00','0000-00-00',62,'1',3,'none'),
+(5,1,2,'Bug Number 1','wat',2,57,56,1,2,'2018-01-28','2018-01-28','0000-00-00',62,'1',3,'');
+
+/*Table structure for table `project_bug_list` */
+
+DROP TABLE IF EXISTS `project_bug_list`;
+
+CREATE TABLE `project_bug_list` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `employee_id` bigint(20) NOT NULL,
+  `project_id` bigint(20) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `bug_rate_id` binary(1) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `project_status_id` bigint(20) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `date_finished` date NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `team_lead_ba` bigint(20) NOT NULL,
+  `team_lead_dev` bigint(20) NOT NULL,
+  `bug_phase_id` bigint(20) NOT NULL,
+  `is_deleted` tinyint(4) NOT NULL DEFAULT '0',
+  `ba_test` bigint(20) NOT NULL,
+  `dev_control` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `bug_app_id` bigint(20) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_list` */
+
+insert  into `project_bug_list`(`id`,`employee_id`,`project_id`,`name`,`bug_rate_id`,`description`,`project_status_id`,`date_filed`,`date_start`,`date_end`,`date_finished`,`manager_id`,`team_lead_ba`,`team_lead_dev`,`bug_phase_id`,`is_deleted`,`ba_test`,`dev_control`,`admin_id`,`bug_app_id`) values 
+(1,61,2,'Bug Number 1','2','wat',2,'2018-01-28','2018-01-28','2018-02-07','2018-01-28',62,59,56,2,0,59,57,1,1);
+
+/*Table structure for table `project_bug_phase` */
+
+DROP TABLE IF EXISTS `project_bug_phase`;
+
+CREATE TABLE `project_bug_phase` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_phase` */
+
+insert  into `project_bug_phase`(`id`,`name`) values 
+(1,'Bug Control'),
+(2,'Bug Assessment');
+
+/*Table structure for table `project_bug_phase_dates` */
+
+DROP TABLE IF EXISTS `project_bug_phase_dates`;
+
+CREATE TABLE `project_bug_phase_dates` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `bug_list_id` bigint(20) NOT NULL,
+  `bug_phase_id` bigint(20) NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `temp_date_end` date NOT NULL,
+  `project_status_id` bigint(20) NOT NULL,
+  `in_deficit` tinyint(4) NOT NULL DEFAULT '0',
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_phase_dates` */
+
+insert  into `project_bug_phase_dates`(`id`,`project_id`,`bug_list_id`,`bug_phase_id`,`date_start`,`date_end`,`temp_date_end`,`project_status_id`,`in_deficit`) values 
+(1,2,1,1,'2018-01-29','2018-02-02','2018-01-29',2,0),
+(2,2,1,2,'2018-02-05','2018-02-07','2018-01-29',2,0);
+
+/*Table structure for table `project_bug_rate` */
+
+DROP TABLE IF EXISTS `project_bug_rate`;
+
+CREATE TABLE `project_bug_rate` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `desc` varchar(255) NOT NULL,
+  `days` varchar(255) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_rate` */
+
+insert  into `project_bug_rate`(`id`,`name`,`desc`,`days`) values 
+(1,'Critical - 7 Days','Critical','7'),
+(2,'Medium - 5 Days','Medium','5'),
+(3,'Average - 2 Days','Average','2'),
+(4,'Normal - 1 Day','Normal','1');
+
+/*Table structure for table `project_bug_request` */
+
+DROP TABLE IF EXISTS `project_bug_request`;
+
+CREATE TABLE `project_bug_request` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `bug_list_id` bigint(20) NOT NULL,
+  `bug_phase_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `date_approved` date NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `comment` varchar(255) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `team_lead_id` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_bug_request` */
+
+insert  into `project_bug_request`(`id`,`project_id`,`bug_list_id`,`bug_phase_id`,`employee_id`,`request_status_id`,`date_filed`,`date_cancelled`,`date_approved`,`reason`,`type`,`comment`,`manager_id`,`team_lead_id`,`admin_id`,`step_id`) values 
+(1,2,1,1,57,5,'2018-01-29','2018-01-28','0000-00-00','','comp','yeah',62,56,1,1),
+(2,2,1,1,57,5,'2018-01-29','2018-01-28','0000-00-00','','comp','asvx',62,56,1,1),
+(3,2,1,1,57,5,'2018-01-29','2018-01-28','0000-00-00','','comp','fvbx',62,56,1,1),
+(4,2,1,1,57,2,'2018-01-29','0000-00-00','2018-01-28','','comp','zxv',62,56,1,3),
+(5,2,1,1,59,5,'2018-01-29','2018-01-28','0000-00-00','','rev','wadasxzc',62,56,1,1),
+(6,2,1,2,59,5,'2018-01-29','2018-01-28','0000-00-00','','comp','fyjnffmfgfjy',62,56,1,1),
+(7,2,1,2,59,5,'2018-01-29','2018-01-28','0000-00-00','','comp','dsacvx',62,56,1,1),
+(8,2,1,1,59,2,'2018-01-29','0000-00-00','2018-01-28','','rev','vdcb',62,56,1,3),
+(9,2,1,1,57,2,'2018-01-29','0000-00-00','2018-01-28','','comp','asav',62,56,1,3),
+(11,2,1,1,59,2,'2018-01-29','0000-00-00','2018-01-28','','rev','asd',62,59,1,3),
+(12,2,1,1,57,2,'2018-01-29','0000-00-00','2018-01-28','','comp','awd',62,56,1,3),
+(13,2,1,2,59,2,'2018-01-29','0000-00-00','2018-01-28','','comp','dsaf',62,59,1,3);
+
 /*Table structure for table `project_deficit` */
 
 DROP TABLE IF EXISTS `project_deficit`;
@@ -22081,6 +22409,41 @@ insert  into `project_designation`(`id`,`name`) values
 (2,'Business Analyst'),
 (3,'Devoper & Business Analyst');
 
+/*Table structure for table `project_development` */
+
+DROP TABLE IF EXISTS `project_development`;
+
+CREATE TABLE `project_development` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `team_lead_id` bigint(20) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `type` varchar(225) NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `hours` varchar(225) NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `date_approved` date NOT NULL,
+  `phase_request_id` bigint(20) NOT NULL,
+  `step_id` bigint(20) NOT NULL DEFAULT '0',
+  `reason` varchar(225) NOT NULL,
+  `comment` varchar(225) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_development` */
+
+insert  into `project_development`(`id`,`project_id`,`employee_id`,`team_lead_id`,`manager_id`,`admin_id`,`type`,`request_status_id`,`hours`,`date_filed`,`date_cancelled`,`date_approved`,`phase_request_id`,`step_id`,`reason`,`comment`) values 
+(1,1,1,56,62,1,'admin',2,'','2018-01-27','0000-00-00','2018-01-27',2,0,'',''),
+(2,1,56,56,62,1,'team',2,'28','2018-01-27','0000-00-00','2018-01-27',1,3,'','Down'),
+(3,2,1,56,62,1,'admin',2,'','2018-01-28','0000-00-00','2018-01-28',4,0,'',''),
+(4,2,56,56,62,1,'team',2,'18','2018-01-28','0000-00-00','2018-01-28',3,3,'','12'),
+(5,3,1,56,62,1,'admin',2,'','2018-01-28','0000-00-00','2018-01-28',8,0,'',''),
+(6,3,56,56,62,1,'team',2,'100','2018-01-28','0000-00-00','2018-01-28',5,3,'','dwa'),
+(7,5,1,56,62,1,'admin',1,'','2018-02-03','0000-00-00','0000-00-00',11,0,'','');
+
 /*Table structure for table `project_employee_history` */
 
 DROP TABLE IF EXISTS `project_employee_history`;
@@ -22098,106 +22461,28 @@ CREATE TABLE `project_employee_history` (
   `removed_by` tinyint(1) NOT NULL DEFAULT '0',
   `designation_id` tinyint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=459 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 /*Data for the table `project_employee_history` */
 
 insert  into `project_employee_history`(`id`,`project_id`,`employee_id`,`is_manager`,`is_team_lead_ba`,`is_team_lead_dev`,`start_date`,`end_date`,`added_by`,`removed_by`,`designation_id`) values 
-(343,85,1,0,0,0,'2017-09-24','0000-00-00',1,0,0),
-(344,85,2,0,0,0,'2017-09-24','2017-09-25',1,1,0),
-(345,85,1,0,0,0,'2017-09-24','0000-00-00',1,0,0),
-(346,85,1,0,0,0,'2017-09-24','0000-00-00',1,0,0),
-(347,85,34,0,0,0,'2017-09-25','2017-09-25',1,1,0),
-(348,85,5,0,0,0,'2017-09-25','2017-09-25',1,1,0),
-(349,85,1,0,0,0,'2017-09-25','0000-00-00',1,0,0),
-(350,85,34,0,0,0,'2017-09-25','2017-09-25',1,1,0),
-(351,85,34,0,0,0,'2017-09-25','2017-09-25',1,1,0),
-(352,85,43,0,0,0,'2017-09-25','0000-00-00',1,0,0),
-(353,85,56,0,0,0,'2017-09-25','0000-00-00',1,0,0),
-(354,85,1,0,0,0,'2017-09-25','0000-00-00',1,0,0),
-(355,85,1,0,0,0,'2017-09-28','0000-00-00',1,0,0),
-(356,86,2,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(357,86,5,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(358,86,1,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(359,87,1,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(360,87,5,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(361,86,1,0,0,0,'2017-10-05','0000-00-00',1,0,0),
-(362,86,56,0,0,0,'2017-10-10','0000-00-00',1,0,0),
-(363,86,58,0,0,0,'2017-10-18','0000-00-00',1,0,0),
-(364,86,56,0,0,0,'2017-10-18','0000-00-00',58,0,2),
-(365,86,57,0,0,0,'2017-10-18','0000-00-00',58,0,1),
-(366,85,1,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(367,87,56,0,0,0,'2017-10-19','0000-00-00',1,0,1),
-(368,86,58,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(369,86,56,0,0,0,'2017-10-19','2017-10-19',58,58,0),
-(370,86,58,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(371,88,58,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(372,88,56,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(373,88,56,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(374,88,56,0,0,0,'2017-10-19','0000-00-00',1,0,0),
-(375,88,1,0,0,0,'2017-10-19','0000-00-00',56,0,0),
-(376,88,57,0,0,0,'2017-10-19','2017-10-19',56,56,2),
-(377,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(378,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(379,86,58,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(380,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(381,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(382,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(383,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(384,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(385,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(386,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(387,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(388,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(389,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(390,86,58,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(391,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(392,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(393,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(394,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(395,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(396,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(397,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(398,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(399,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(400,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(401,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(402,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(403,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(404,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(405,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(406,85,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(407,87,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(408,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(409,86,58,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(426,97,60,0,1,1,'2017-11-13','0000-00-00',1,0,0),
-(427,97,56,1,0,0,'2017-11-13','0000-00-00',1,0,0),
-(428,98,1,1,1,1,'2017-11-13','0000-00-00',1,0,0),
-(434,104,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(435,104,1,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(436,88,56,0,0,0,'2017-11-13','0000-00-00',1,0,0),
-(437,88,56,0,0,0,'2017-11-14','0000-00-00',1,0,0),
-(438,88,56,0,0,0,'2017-11-14','0000-00-00',1,0,0),
-(439,88,1,0,0,0,'2017-11-14','0000-00-00',56,0,2),
-(440,88,1,0,0,0,'2017-11-14','0000-00-00',1,0,0),
-(441,88,56,0,0,0,'2017-11-14','0000-00-00',1,0,0),
-(442,88,60,0,0,0,'2017-11-15','0000-00-00',56,0,0),
-(443,88,1,0,0,0,'2017-11-15','0000-00-00',56,0,0),
-(444,85,1,0,0,0,'2017-12-28','0000-00-00',1,0,0),
-(445,88,59,0,0,0,'2017-12-28','0000-00-00',56,0,0),
-(446,88,58,0,0,0,'2017-12-28','0000-00-00',56,0,0),
-(447,88,57,0,0,0,'2017-12-28','2017-12-28',56,56,0),
-(448,104,1,0,0,0,'2017-12-29','0000-00-00',1,0,0),
-(449,104,1,0,0,0,'2017-12-29','0000-00-00',1,0,0),
-(450,105,59,0,1,0,'2017-12-29','0000-00-00',56,0,0),
-(451,105,60,0,0,1,'2017-12-29','0000-00-00',56,0,0),
-(452,105,56,1,0,0,'2017-12-29','0000-00-00',56,0,0),
-(453,105,1,0,0,0,'2017-12-29','0000-00-00',56,0,1),
-(454,88,56,1,0,0,'2017-12-29','0000-00-00',1,0,0),
-(455,87,1,1,0,0,'2017-12-29','0000-00-00',1,0,0),
-(456,85,1,1,0,0,'2017-12-29','0000-00-00',1,0,0),
-(457,104,56,1,0,0,'2017-12-29','0000-00-00',1,0,0),
-(458,86,58,1,0,0,'2017-12-30','0000-00-00',1,0,0);
+(1,1,59,0,1,0,'2018-01-27','0000-00-00',62,0,0),
+(2,1,56,0,0,1,'2018-01-27','0000-00-00',62,0,0),
+(3,1,62,1,0,0,'2018-01-27','0000-00-00',62,0,0),
+(4,2,59,0,1,0,'2018-01-27','0000-00-00',62,0,0),
+(5,2,56,0,0,1,'2018-01-27','0000-00-00',62,0,0),
+(6,2,62,1,0,0,'2018-01-27','0000-00-00',62,0,0),
+(7,2,57,0,0,0,'2018-01-28','0000-00-00',56,0,1),
+(8,3,59,0,1,0,'2018-01-28','0000-00-00',62,0,0),
+(9,3,56,0,0,1,'2018-01-28','0000-00-00',62,0,0),
+(10,3,62,1,0,0,'2018-01-28','0000-00-00',62,0,0),
+(11,4,59,0,1,0,'2018-01-28','0000-00-00',62,0,0),
+(12,4,56,0,0,1,'2018-01-28','0000-00-00',62,0,0),
+(13,4,62,1,0,0,'2018-01-28','0000-00-00',62,0,0),
+(14,3,60,0,0,0,'2018-01-28','0000-00-00',62,0,2),
+(15,5,59,0,1,0,'2018-01-29','0000-00-00',62,0,0),
+(16,5,56,0,0,1,'2018-01-29','0000-00-00',62,0,0),
+(17,5,62,1,0,0,'2018-01-29','0000-00-00',62,0,0);
 
 /*Table structure for table `project_files` */
 
@@ -22211,18 +22496,45 @@ CREATE TABLE `project_files` (
   `employee_id` varchar(255) NOT NULL,
   `project_id` varchar(255) NOT NULL,
   `project_phase_id` varchar(255) NOT NULL,
+  `project_application_id` bigint(20) NOT NULL,
+  `task_completion_id` bigint(20) NOT NULL DEFAULT '0',
+  `phase_request_id` bigint(20) NOT NULL,
+  `project_dev_id` bigint(20) NOT NULL,
+  `is_approved` tinyint(4) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
 
 /*Data for the table `project_files` */
 
-insert  into `project_files`(`id`,`file_name`,`file_location`,`date_modified`,`employee_id`,`project_id`,`project_phase_id`,`is_deleted`) values 
-(1,'RRF Sales Department.jpg','1.jpg','2017-12-28','1','104','1',0),
-(2,'RRF Sales Department.jpg','2.jpg','2017-12-28','1','86','',0),
-(4,'RRF Finance Department.jpg','4.jpg','2017-12-28','1','88','1',0),
-(5,'RRF Finance Department.jpg','5.jpg','2017-12-28','56','88','1',0),
-(6,'RRF Plant Committee.jpg','6.jpg','2017-12-28','1','104','4',0);
+insert  into `project_files`(`id`,`file_name`,`file_location`,`date_modified`,`employee_id`,`project_id`,`project_phase_id`,`project_application_id`,`task_completion_id`,`phase_request_id`,`project_dev_id`,`is_approved`,`is_deleted`) values 
+(1,'farmer.png','1.png','2018-01-27','62','1','1',1,0,0,0,1,0),
+(2,'teacher.png','2.png','2018-01-27','59','1','1',0,0,1,0,1,0),
+(3,'teacher.png','3.png','2018-01-27','59','1','1',0,0,1,0,1,0),
+(4,'farmer.png','4.png','2018-01-27','59','1','1',0,0,1,0,1,0),
+(5,'Nurse.jpg','5.jpg','2018-01-27','59','1','2',0,0,2,0,1,0),
+(6,'Fertilizer.docx','6.docx','2018-01-27','56','1','3',0,0,0,2,1,0),
+(7,'Fertilizer.docx','7.docx','2018-01-27','62','2','1',2,0,0,0,1,0),
+(8,'farmer.png','8.png','2018-01-28','59','2','1',0,0,3,0,1,0),
+(9,'rabbit.jpg','9.jpg','2018-01-28','59','2','2',0,0,4,0,1,0),
+(10,'','10','2018-01-28','56','2','3',0,0,0,4,1,0),
+(11,'Nurse.jpg','11.jpg','2018-01-28','56','2','3',0,0,5,0,0,1),
+(12,'Nurse.jpg','12.jpg','2018-01-28','56','2','3',0,0,6,0,1,0),
+(13,'tiger.jpg','13.jpg','2018-01-28','56','2','3',0,1,0,0,1,0),
+(14,'Assign in Scie K2.docx','14.docx','2018-01-28','57','2','3',0,2,0,0,1,0),
+(15,'dentist.jpg','15.jpg','2018-01-28','62','3','1',3,0,0,0,1,0),
+(16,'tiger.jpg','16.jpg','2018-01-28','59','3','1',0,0,7,0,1,0),
+(17,'doctor.jpg','17.jpg','2018-01-28','59','3','2',0,0,8,0,1,0),
+(18,'','18','2018-01-28','56','3','3',0,0,0,6,1,0),
+(19,'Assign in Scie K2.docx','19.docx','2018-01-28','62','4','1',4,0,0,0,1,0),
+(20,'Assign in Scie K2.docx','20.docx','2018-01-28','62','','',5,0,0,0,0,0),
+(21,'doctor.jpg','21.jpg','2018-01-28','56','3','3',0,0,9,0,1,0),
+(22,'account_a.html','22.html','2018-01-29','62','5','1',6,0,0,0,1,0),
+(23,'account_a.html','23.html','2018-01-29','59','5','1',0,0,10,0,1,0),
+(24,'account_a.html','24.html','2018-01-29','59','5','2',0,3,0,0,0,1),
+(25,'tiger.jpg','25.jpg','2018-01-29','59','5','2',0,4,0,0,0,1),
+(26,'doctor.jpg','26.jpg','2018-01-29','59','5','2',0,5,0,0,1,0),
+(27,'itb 4th floor.xml','27.xml','2018-01-29','59','5','2',0,0,11,0,1,0);
 
 /*Table structure for table `project_phase_dates` */
 
@@ -22239,59 +22551,39 @@ CREATE TABLE `project_phase_dates` (
   `designation_id` bigint(20) NOT NULL,
   `in_deficit` tinyint(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
 
 /*Data for the table `project_phase_dates` */
 
 insert  into `project_phase_dates`(`id`,`project_id`,`project_phase_id`,`date_start`,`date_end`,`temp_date_end`,`status_id`,`designation_id`,`in_deficit`) values 
-(82,85,1,'2017-09-24','2017-09-29','0000-00-00',4,2,0),
-(83,85,2,'2017-10-02','2017-10-09','0000-00-00',4,2,0),
-(84,85,3,'2017-10-10','2017-10-12','0000-00-00',4,1,0),
-(85,85,4,'2017-10-13','2017-10-20','0000-00-00',4,2,0),
-(86,85,5,'2017-10-23','2017-10-27','0000-00-00',4,2,0),
-(87,85,6,'2017-10-30','2017-10-31','0000-00-00',4,2,0),
-(88,85,7,'2017-11-01','2017-11-02','0000-00-00',4,2,0),
-(89,85,8,'2017-11-03','2017-11-07','0000-00-00',4,2,0),
-(90,86,1,'2017-10-04','2017-10-11','0000-00-00',2,2,0),
-(91,86,2,'2017-10-12','2017-10-20','0000-00-00',2,2,0),
-(92,86,3,'2017-10-23','2017-10-24','0000-00-00',2,1,0),
-(93,86,4,'2017-10-25','2017-10-31','2017-10-31',2,2,0),
-(94,86,5,'2017-11-01','2017-11-07','2017-11-07',2,2,0),
-(95,86,6,'2017-11-08','2017-11-09','2017-11-09',2,2,0),
-(96,86,7,'2017-11-10','2017-11-13','2017-11-13',2,2,0),
-(97,86,8,'2017-11-14','2017-11-16','2017-11-16',2,2,0),
-(98,87,1,'2017-10-05','2017-10-12','0000-00-00',2,2,0),
-(99,87,2,'2017-10-13','2017-10-23','0000-00-00',2,2,0),
-(100,87,3,'2017-10-24','2017-10-25','0000-00-00',2,1,0),
-(101,87,4,'2017-10-26','2017-11-01','0000-00-00',2,2,0),
-(102,87,5,'2017-11-02','2017-11-08','0000-00-00',2,2,0),
-(103,87,6,'2017-11-09','2017-11-10','2018-01-01',2,2,0),
-(104,87,7,'2017-11-13','2017-11-14','2017-11-14',2,2,0),
-(105,87,8,'2017-11-15','2017-11-17','2017-11-17',2,2,0),
-(106,88,1,'2017-10-19','2017-10-26','0000-00-00',2,2,0),
-(107,88,2,'2017-10-27','2017-11-03','0000-00-00',4,2,0),
-(108,88,3,'2017-11-06','2017-11-08','0000-00-00',4,1,0),
-(109,88,4,'2017-11-09','2017-11-15','0000-00-00',4,2,0),
-(110,88,5,'2017-11-16','2017-11-22','0000-00-00',4,2,0),
-(111,88,6,'2017-11-23','2017-11-24','0000-00-00',4,2,0),
-(112,88,7,'2017-11-27','2017-11-28','0000-00-00',4,2,0),
-(113,88,8,'2017-11-29','2017-12-01','0000-00-00',4,2,0),
-(138,104,1,'2017-11-13','2017-11-20','0000-00-00',4,2,0),
-(139,104,2,'2017-11-21','2017-11-28','0000-00-00',4,2,0),
-(140,104,3,'2017-11-29','2017-11-29','0000-00-00',4,1,0),
-(141,104,4,'2017-11-30','2017-12-06','0000-00-00',4,2,0),
-(142,104,5,'2017-12-07','2017-12-13','0000-00-00',4,2,0),
-(143,104,6,'2017-12-14','2017-12-15','0000-00-00',4,2,0),
-(144,104,7,'2017-12-18','2017-12-19','0000-00-00',4,2,0),
-(145,104,8,'2017-12-20','2017-12-22','0000-00-00',4,2,0),
-(146,105,1,'2017-12-29','2018-01-05','0000-00-00',1,2,0),
-(147,105,2,'2018-01-08','2018-01-15','0000-00-00',1,2,0),
-(148,105,3,'2018-01-16','2018-01-17','0000-00-00',3,1,0),
-(149,105,4,'2018-01-18','2018-01-24','0000-00-00',3,2,0),
-(150,105,5,'2018-01-25','2018-01-31','0000-00-00',3,2,0),
-(151,105,6,'2018-02-01','2018-02-02','0000-00-00',3,2,0),
-(152,105,7,'2018-02-05','2018-02-06','0000-00-00',3,2,0),
-(153,105,8,'2018-02-07','2018-02-09','0000-00-00',3,2,0);
+(1,1,1,'2018-01-29','2018-02-02','2018-01-29',2,2,0),
+(2,1,2,'2018-02-05','2018-02-12','2018-01-29',2,2,0),
+(3,1,3,'2018-01-29','2018-02-01','0000-00-00',1,1,0),
+(4,1,4,'2018-02-02','2018-02-08','0000-00-00',3,2,0),
+(5,1,5,'2018-02-09','2018-02-15','0000-00-00',3,2,0),
+(6,1,6,'2018-02-16','2018-02-19','0000-00-00',3,2,0),
+(7,1,7,'2018-02-20','2018-02-21','0000-00-00',3,2,0),
+(8,1,8,'2018-02-22','2018-02-26','0000-00-00',3,2,0),
+(9,2,1,'2018-01-29','2018-02-02','2018-01-29',2,2,0),
+(10,2,2,'2018-02-05','2018-02-12','2018-01-29',2,2,0),
+(11,2,3,'2018-01-29','2018-01-31','2018-01-29',2,1,0),
+(12,2,4,'2018-02-01','2018-02-07','0000-00-00',1,2,0),
+(13,2,5,'2018-02-08','2018-02-14','0000-00-00',3,2,0),
+(14,2,6,'2018-02-15','2018-02-16','0000-00-00',3,2,0),
+(15,2,7,'2018-02-19','2018-02-20','0000-00-00',3,2,0),
+(16,2,8,'2018-02-21','2018-02-23','0000-00-00',3,2,0),
+(17,3,1,'2018-01-29','2018-02-02','2018-01-29',2,2,0),
+(18,3,2,'2018-02-05','2018-02-12','2018-01-29',1,2,1),
+(19,3,3,'2018-02-12','2018-02-28','0000-00-00',1,1,0),
+(20,3,4,'2018-03-01','2018-03-07','0000-00-00',3,2,0),
+(21,3,5,'2018-03-08','2018-03-14','0000-00-00',3,2,0),
+(22,3,6,'2018-03-15','2018-03-16','0000-00-00',3,2,0),
+(23,3,7,'2018-03-19','2018-03-20','0000-00-00',3,2,0),
+(24,3,8,'2018-03-21','2018-03-23','0000-00-00',3,2,0),
+(25,4,1,'2018-01-29','2018-02-02','0000-00-00',1,2,0),
+(26,4,2,'2018-02-05','2018-02-12','0000-00-00',1,2,0),
+(27,5,1,'2018-01-29','2018-02-02','2018-01-29',2,2,0),
+(28,5,2,'2018-02-05','2018-02-12','2018-01-29',2,2,0);
 
 /*Table structure for table `project_phase_request` */
 
@@ -22308,19 +22600,29 @@ CREATE TABLE `project_phase_request` (
   `designation_id` bigint(20) NOT NULL,
   `date_cancelled` date NOT NULL,
   `date_approved` date NOT NULL,
-  `reason` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `reason` varchar(225) NOT NULL,
+  `type` varchar(225) NOT NULL,
   `hours` varchar(255) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
+  `comment` varchar(225) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 
 /*Data for the table `project_phase_request` */
 
-insert  into `project_phase_request`(`id`,`project_id`,`project_phase_id`,`employee_id`,`request_status_id`,`manager_id`,`date_filed`,`designation_id`,`date_cancelled`,`date_approved`,`reason`,`type`,`hours`) values 
-(1,86,7,1,'2',58,'2018-01-01',2,'0000-00-00','2017-12-31','ads','rev','12'),
-(2,86,6,1,'2',58,'2018-01-01',2,'0000-00-00','2017-12-31','das','rev','12'),
-(3,86,6,1,'2',58,'2018-01-01',2,'0000-00-00','2017-12-31','','comp',''),
-(4,86,7,1,'2',58,'2018-01-01',2,'0000-00-00','2017-12-31','','comp','');
+insert  into `project_phase_request`(`id`,`project_id`,`project_phase_id`,`employee_id`,`request_status_id`,`manager_id`,`date_filed`,`designation_id`,`date_cancelled`,`date_approved`,`reason`,`type`,`hours`,`step_id`,`comment`,`admin_id`) values 
+(1,1,1,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-27','','comp','',3,'',1),
+(2,1,2,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-27','','comp','',3,'',1),
+(3,2,1,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-28','','comp','',3,'1',1),
+(4,2,2,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-28','','comp','',3,'we',1),
+(5,2,3,56,'5',62,'2018-01-29',1,'2018-01-28','0000-00-00','','comp','',2,'wqxs',1),
+(6,2,3,56,'2',62,'2018-01-29',1,'0000-00-00','2018-01-28','','comp','',3,'asd',1),
+(7,3,1,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-28','','comp','',3,'dwasf',1),
+(8,3,2,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-28','','comp','',3,'daf',1),
+(9,3,2,56,'2',62,'2018-01-29',1,'0000-00-00','2018-01-28','','rev','',3,'awds',1),
+(10,5,1,59,'2',62,'2018-01-29',2,'0000-00-00','2018-01-29','','comp','',3,'i\'m done',1),
+(11,5,2,59,'2',62,'2018-01-29',2,'0000-00-00','2018-02-03','','comp','',3,'bla',1);
 
 /*Table structure for table `project_phases` */
 
@@ -22353,7 +22655,7 @@ CREATE TABLE `project_requests` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `project_id` bigint(20) NOT NULL,
   `employee_id` bigint(20) NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `manager_id` tinyint(1) NOT NULL,
   `status_id` tinyint(1) NOT NULL,
   `modification_type` tinyint(1) NOT NULL,
@@ -22366,11 +22668,18 @@ CREATE TABLE `project_requests` (
   `third_approver_id` bigint(20) NOT NULL,
   `third_approver_date` date NOT NULL,
   `designation_id` tinyint(4) NOT NULL,
-  `reason` varchar(255) DEFAULT NULL,
+  `reason` varchar(255) NOT NULL,
+  `comment` varchar(255) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `project_requests` */
+
+insert  into `project_requests`(`id`,`project_id`,`employee_id`,`is_deleted`,`manager_id`,`status_id`,`modification_type`,`date_filed`,`requested_employee_id`,`first_approver_id`,`first_approver_date`,`second_approver_id`,`second_approver_date`,`third_approver_id`,`third_approver_date`,`designation_id`,`reason`,`comment`,`admin_id`,`step_id`) values 
+(1,2,56,0,62,2,1,'2018-01-28',57,0,'0000-00-00',0,'0000-00-00',0,'0000-00-00',1,'','',1,3),
+(2,3,62,0,62,2,1,'2018-01-28',60,0,'0000-00-00',0,'0000-00-00',0,'0000-00-00',2,'','',1,3);
 
 /*Table structure for table `project_status` */
 
@@ -22385,10 +22694,141 @@ CREATE TABLE `project_status` (
 /*Data for the table `project_status` */
 
 insert  into `project_status`(`id`,`status_name`) values 
-(1,'On-going\r\n'),
+(1,'On-going'),
 (2,'Done'),
 (3,'Pending'),
 (4,'Delayed');
+
+/*Table structure for table `project_task` */
+
+DROP TABLE IF EXISTS `project_task`;
+
+CREATE TABLE `project_task` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `employee_id` varchar(255) NOT NULL,
+  `project_id` bigint(20) NOT NULL,
+  `project_phase_id` bigint(20) NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `date_filed` date NOT NULL,
+  `request_status_id` bigint(20) NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `requestor_id` bigint(20) NOT NULL,
+  `date_approved` date NOT NULL,
+  `worked_done` varchar(255) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_task` */
+
+insert  into `project_task`(`id`,`employee_id`,`project_id`,`project_phase_id`,`date_start`,`date_end`,`date_filed`,`request_status_id`,`reason`,`date_cancelled`,`requestor_id`,`date_approved`,`worked_done`,`manager_id`,`admin_id`,`step_id`) values 
+(1,'59',2,4,'2018-02-01','2018-02-02','2018-01-28',2,'','0000-00-00',59,'2018-01-28','wadtd',62,1,3),
+(2,'56',2,3,'2018-01-29','2018-01-29','2018-01-28',2,'','0000-00-00',56,'2018-01-28','awdwad',62,1,3),
+(3,'57',2,3,'2018-01-29','2018-01-29','2018-01-28',2,'','0000-00-00',56,'2018-01-28','awdwad',62,1,3),
+(4,'60',3,2,'2018-02-05','2018-02-05','2018-01-28',2,'','0000-00-00',59,'2018-01-28','wadds',62,1,3),
+(5,'59',2,4,'2018-02-02','2018-02-07','2018-01-28',2,'','0000-00-00',59,'2018-01-28','dsf',62,1,3),
+(6,'59',5,2,'2018-02-05','2018-02-12','2018-01-29',2,'','0000-00-00',62,'2018-01-29','do this team leader BA',62,1,3);
+
+/*Table structure for table `project_task_completion` */
+
+DROP TABLE IF EXISTS `project_task_completion`;
+
+CREATE TABLE `project_task_completion` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `project_phase_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `date_filed` date NOT NULL,
+  `date_approved` date NOT NULL,
+  `date_cancelled` date NOT NULL,
+  `request_status_id` tinyint(4) NOT NULL,
+  `work_to_do` varchar(255) NOT NULL,
+  `worked_done` varchar(255) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `team_lead_id` bigint(20) NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `task_list_id` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
+  `step_id` bigint(20) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_task_completion` */
+
+insert  into `project_task_completion`(`id`,`project_id`,`project_phase_id`,`employee_id`,`date_start`,`date_end`,`date_filed`,`date_approved`,`date_cancelled`,`request_status_id`,`work_to_do`,`worked_done`,`manager_id`,`team_lead_id`,`reason`,`task_list_id`,`admin_id`,`step_id`) values 
+(1,2,3,56,'2018-01-29','2018-01-29','2018-01-28','2018-01-28','0000-00-00',2,'awdwad','wdac',62,0,'',2,1,3),
+(2,2,3,57,'2018-01-29','2018-01-29','2018-01-28','2018-01-28','0000-00-00',2,'awdwad','4',62,56,'',3,1,3),
+(3,5,2,59,'2018-02-05','2018-02-12','2018-01-29','0000-00-00','2018-01-29',5,'do this team leader BA','i\'m done :)',62,56,'',6,1,2),
+(4,5,2,59,'2018-02-05','2018-02-12','2018-01-29','0000-00-00','2018-01-29',5,'do this team leader BA','wda',62,56,'',6,1,1),
+(5,5,2,59,'2018-02-05','2018-02-12','2018-01-29','2018-01-29','0000-00-00',2,'do this team leader BA','adxx',62,0,'',6,1,3);
+
+/*Table structure for table `project_task_dates` */
+
+DROP TABLE IF EXISTS `project_task_dates`;
+
+CREATE TABLE `project_task_dates` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_task_id` bigint(20) NOT NULL,
+  `date` date NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_task_dates` */
+
+insert  into `project_task_dates`(`id`,`project_task_id`,`date`) values 
+(1,1,'2018-02-01'),
+(2,1,'2018-02-02'),
+(3,2,'2018-01-29'),
+(4,3,'2018-01-29'),
+(5,4,'2018-02-05'),
+(6,5,'2018-02-02'),
+(7,5,'2018-02-05'),
+(8,5,'2018-02-06'),
+(9,5,'2018-02-07'),
+(10,6,'2018-02-05'),
+(11,6,'2018-02-06'),
+(12,6,'2018-02-07'),
+(13,6,'2018-02-08'),
+(14,6,'2018-02-09'),
+(15,6,'2018-02-12');
+
+/*Table structure for table `project_task_list` */
+
+DROP TABLE IF EXISTS `project_task_list`;
+
+CREATE TABLE `project_task_list` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(20) NOT NULL,
+  `project_phase_id` bigint(20) NOT NULL,
+  `employee_id` bigint(20) NOT NULL,
+  `date_start` date NOT NULL,
+  `date_end` date NOT NULL,
+  `status_id` tinyint(4) NOT NULL,
+  `worked_done` varchar(255) NOT NULL,
+  `manager_id` bigint(20) NOT NULL,
+  `date_finished` date NOT NULL,
+  `work_done` varchar(255) NOT NULL,
+  `is_submitted` tinyint(4) NOT NULL DEFAULT '0',
+  `is_query` tinyint(4) NOT NULL DEFAULT '0',
+  `request_id` bigint(20) NOT NULL DEFAULT '0',
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+/*Data for the table `project_task_list` */
+
+insert  into `project_task_list`(`id`,`project_id`,`project_phase_id`,`employee_id`,`date_start`,`date_end`,`status_id`,`worked_done`,`manager_id`,`date_finished`,`work_done`,`is_submitted`,`is_query`,`request_id`) values 
+(1,2,4,59,'2018-02-01','2018-02-02',1,'wadtd',62,'0000-00-00','',0,0,0),
+(2,2,3,56,'2018-01-29','2018-01-29',2,'awdwad',62,'2018-01-28','wdac',1,0,1),
+(3,2,3,57,'2018-01-29','2018-01-29',2,'awdwad',62,'2018-01-28','4',1,0,2),
+(4,3,2,60,'2018-02-05','2018-02-05',1,'wadds',62,'0000-00-00','',0,0,0),
+(5,2,4,59,'2018-02-02','2018-02-07',1,'dsf',62,'0000-00-00','',0,0,0),
+(6,5,2,59,'2018-02-05','2018-02-12',2,'do this team leader BA',62,'2018-01-29','adxx',1,0,5);
 
 /*Table structure for table `projects` */
 
@@ -22404,26 +22844,28 @@ CREATE TABLE `projects` (
   `end_date` date NOT NULL,
   `date_filed` date NOT NULL,
   `project_status_id` bigint(20) NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `manager_id` tinyint(1) NOT NULL,
   `first_approver_id` bigint(20) NOT NULL,
   `second_approver_id` bigint(20) NOT NULL,
   `third_approver_id` bigint(20) NOT NULL,
   `man_hours` bigint(20) unsigned NOT NULL,
   `cur_phase` tinyint(20) NOT NULL,
+  `team_lead_ba` bigint(20) NOT NULL,
+  `team_lead_dev` bigint(20) NOT NULL,
+  `admin_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `projects` */
 
-insert  into `projects`(`id`,`name`,`description`,`department_id`,`employee_id`,`start_date`,`end_date`,`date_filed`,`project_status_id`,`is_deleted`,`manager_id`,`first_approver_id`,`second_approver_id`,`third_approver_id`,`man_hours`,`cur_phase`) values 
-(85,'ISAD','1',0,1,'2017-09-24','2017-11-07','2017-09-24',4,0,1,1,0,0,0,3),
-(86,'Test1','1',0,1,'2017-10-04','2017-11-16','2017-10-05',1,0,58,58,0,0,0,8),
-(87,'Test1','Test1',0,1,'2017-10-05','2017-11-17','2017-10-05',1,0,1,1,0,0,0,8),
-(88,'ISAD 2','Test1',0,1,'2017-10-19','2017-12-01','2017-10-19',4,0,56,56,0,0,0,2),
-(104,'adw','wda',0,1,'2017-11-13','2017-12-22','2017-11-13',4,0,56,56,0,0,0,1),
-(105,'Secret1','waer',0,56,'2017-12-29','2018-02-09','2017-12-29',1,0,56,56,0,0,16,2);
+insert  into `projects`(`id`,`name`,`description`,`department_id`,`employee_id`,`start_date`,`end_date`,`date_filed`,`project_status_id`,`is_deleted`,`manager_id`,`first_approver_id`,`second_approver_id`,`third_approver_id`,`man_hours`,`cur_phase`,`team_lead_ba`,`team_lead_dev`,`admin_id`) values 
+(1,'RTU','Test Data',0,1,'2018-01-29','2018-02-26','2018-01-27',1,0,62,0,0,0,28,3,59,56,0),
+(2,'Nomosla','Clothing line',0,1,'2018-01-29','2018-02-23','2018-01-27',2,0,62,0,0,0,18,4,59,56,0),
+(3,'Uncrowned','uncrowned ph',0,1,'2018-01-29','2018-03-23','2018-01-28',1,0,62,0,0,0,100,2,59,56,0),
+(4,'Test 1','tets',0,1,'2018-01-29','0000-00-00','2018-01-28',1,0,62,0,0,0,0,1,59,56,0),
+(5,'bloons system','bloons inventory',0,1,'2018-01-29','0000-00-00','2018-01-29',1,0,62,0,0,0,0,2,59,56,0);
 
 /*Table structure for table `projects_employees` */
 
@@ -22441,28 +22883,33 @@ CREATE TABLE `projects_employees` (
   `worked_hours` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=476 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 /*Data for the table `projects_employees` */
 
 insert  into `projects_employees`(`id`,`project_id`,`employee_id`,`is_team_lead_ba`,`is_team_lead_dev`,`is_manager`,`is_deleted`,`designation_id`,`worked_hours`) values 
-(459,105,59,1,0,0,0,2,'0'),
-(460,105,60,0,1,0,0,1,'0'),
-(461,105,56,0,0,1,0,0,'0'),
-(462,105,1,0,0,0,0,1,'0'),
-(463,88,56,0,1,1,0,0,'0'),
-(464,88,1,1,0,0,0,2,'0'),
-(465,87,1,1,0,1,0,0,'0'),
-(466,87,58,0,1,0,0,1,'0'),
-(467,85,59,1,0,0,0,2,'0'),
-(468,85,58,0,1,0,0,1,'0'),
-(469,85,1,0,0,1,0,0,'0'),
-(470,104,59,1,0,0,0,2,'0'),
-(471,104,1,0,1,0,0,1,'0'),
-(472,104,56,0,0,1,0,0,'0'),
-(473,86,1,1,0,0,0,2,'0'),
-(474,86,60,0,1,0,0,1,'0'),
-(475,86,58,0,0,1,0,0,'0');
+(1,1,59,1,0,0,0,2,'0'),
+(2,1,56,0,1,0,0,1,'0'),
+(3,1,62,0,0,1,0,0,'0'),
+(4,1,1,0,0,0,0,0,'0'),
+(5,2,59,1,0,0,0,2,'0'),
+(6,2,56,0,1,0,0,1,'0'),
+(7,2,62,0,0,1,0,0,'0'),
+(8,2,1,0,0,0,0,0,'0'),
+(9,2,57,0,0,0,0,1,'0'),
+(10,3,59,1,0,0,0,2,'0'),
+(11,3,56,0,1,0,0,1,'0'),
+(12,3,62,0,0,1,0,0,'0'),
+(13,3,1,0,0,0,0,0,'0'),
+(14,4,59,1,0,0,0,2,'0'),
+(15,4,56,0,1,0,0,1,'0'),
+(16,4,62,0,0,1,0,0,'0'),
+(17,4,1,0,0,0,0,0,'0'),
+(18,3,60,0,0,0,0,2,'0'),
+(19,5,59,1,0,0,0,2,'0'),
+(20,5,56,0,1,0,0,1,'0'),
+(21,5,62,0,0,1,0,0,'0'),
+(22,5,1,0,0,0,0,0,'0');
 
 /*Table structure for table `receivable_and_taxable_allowances` */
 
@@ -22994,15 +23441,19 @@ insert  into `trainings`(`id`,`name`,`location`,`topic`,`training_date`,`bond_mo
 DROP TABLE IF EXISTS `user_type`;
 
 CREATE TABLE `user_type` (
-  `id` bigint(20) unsigned NOT NULL,
-  `description` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `user_type` */
 
 insert  into `user_type`(`id`,`description`) values 
-(2,'Employee'),
-(4,'Administrator');
+(3,'Project Manager'),
+(4,'Administrator'),
+(5,'Account Manager'),
+(1,'Developer'),
+(2,'Business Analyst');
 
 /*Table structure for table `users` */
 
@@ -23024,17 +23475,19 @@ CREATE TABLE `users` (
   `last_name` varchar(255) DEFAULT '',
   `middle_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`employee_id`,`username`,`password`,`user_type_id`,`password_question`,`password_answer`,`is_login`,`is_active`,`is_deleted`,`last_activity`,`first_name`,`last_name`,`middle_name`) values 
-(1,1,'admin','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',4,'Who is your d?','MD',0,1,0,'2017-12-31 00:06:08','','',''),
-(2,56,'secret1','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',4,'water','water',0,1,0,'2017-12-29 15:15:18','secret11','secret11','secret11'),
-(3,57,'secret2','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'secret2','secret2',0,1,0,'2017-11-22 15:21:39','','',''),
-(4,58,'secret4','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'water','water',0,1,0,'2017-12-31 00:06:06','','',''),
-(5,59,'secret3','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'water','water',0,1,0,'2017-10-05 00:08:26','','',''),
-(6,60,'secret5','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'water','water',0,1,0,'2017-12-28 19:05:32','','','');
+(1,1,'admin','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',4,'Who is your d?','MD',0,1,0,'2018-02-03 01:22:20','ADMIN','SGTSI','s'),
+(2,56,'secret1','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',1,'water','water',0,1,0,'2018-01-29 01:11:08','secret11','secret11','secret11'),
+(3,57,'secret2','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',1,'secret2','secret2',0,1,0,'2018-01-28 15:16:01','secret2','secret2','secret2'),
+(4,58,'secret4','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',1,'water','water',0,1,0,'2018-01-18 17:17:15','secret4','secret4','secret4'),
+(5,59,'secret3','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'water','water',0,1,0,'2018-01-29 01:29:23','secret3','secret3','secret3'),
+(6,60,'secret5','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',2,'water','water',0,1,0,'2018-01-28 18:41:45','secret5','secret5','secret5'),
+(7,61,'account','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',5,'Who is the Account Manager?','Me',0,1,0,'2018-01-28 14:06:19','SGTSI','Manager','Account'),
+(8,62,'project','TNTz0EXkSq4dC+kr8w8+UF14gOTFdx6RSEJpaGwQ7v4=',3,'sgtsi','sgtsi',0,1,0,'2018-01-29 01:28:42','Manager','Project','S.');
 
 /*Table structure for table `vw_employees_adjustments` */
 
@@ -23320,7 +23773,7 @@ CREATE TABLE `vw_employees_ot_pre` (
 
 DELIMITER $$
 
-/*!50106 CREATE DEFINER=`root`@`localhost` EVENT `project_update` ON SCHEDULE EVERY 1 DAY STARTS '2017-10-18 00:01:00' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'test update' DO CALL update_project() */$$
+/*!50106 CREATE DEFINER=`root`@`localhost` EVENT `project_update` ON SCHEDULE EVERY 1 MINUTE STARTS '2017-10-18 00:00:00' ON COMPLETION PRESERVE ENABLE COMMENT 'test update' DO CALL update_project() */$$
 DELIMITER ;
 
 /* Procedure structure for procedure `insert_attendance` */
@@ -23360,7 +23813,6 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `refresh_leaves`()
 BEGIN
-
  DECLARE done INT DEFAULT FALSE;
  DECLARE done1 INT DEFAULT FALSE;
   DECLARE a INT;
@@ -23369,12 +23821,10 @@ BEGIN
   DECLARE cur1 CURSOR FOR SELECT pg.payroll_group_id FROM payroll_groups pg WHERE pg.is_deleted=0;
 	
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE, done1=TRUE;
-
   SELECT EXTRACT(YEAR FROM NOW()) INTO b;
   SELECT NOW() INTO c;
   
   OPEN cur1;
-
   read_loop: LOOP
     FETCH cur1 INTO a;
     IF done THEN
@@ -23400,39 +23850,7 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE, done1=TRUE;
 	WHERE eal.is_deleted=0;
 	
   CLOSE cur1;
-
-
 	END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `update_project` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `update_project` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `update_project`()
-BEGIN
- DECLARE done INT DEFAULT FALSE;
- DECLARE done1 INT DEFAULT FALSE;
- DECLARE a INT;
- DECLARE cur1 CURSOR FOR SELECT project_id FROM project_phase_dates WHERE (status_id=1 or status_id=3) AND date_end<=DATE_ADD(CURDATE(),INTERVAL -1 DAY);
- DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE, done1=TRUE;
- 
- OPEN cur1;
-	read_loop: LOOP
-	FETCH cur1 INTO a;
-	IF done THEN
-	LEAVE read_loop;
-	END IF;
-	
-	UPDATE projects SET project_status_id=4 WHERE id=a;
-	UPDATE project_phase_dates SET status_id=4 WHERE (status_id=1 OR status_id=3) AND project_id=a AND date_end<=DATE_ADD(CURDATE(),INTERVAL -1 DAY);
-	
-  END LOOP read_loop;
-	
-  CLOSE cur1;
-END */$$
 DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

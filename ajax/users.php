@@ -34,7 +34,7 @@ $columns = array(
             $action_buttons="";
 
             if ($row['is_active']==1) :
-                $action_buttons.="<a class='btn  btn-sm btn-success' href='activate.php?id={$row['id']}' onclick='return confirm(\"Are you sure you want to deactivate this user?\")'><span class='fa fa-lock' ></span> Deactivate</a>";
+                $action_buttons.="<a class='btn  btn-sm btn-danger' href='activate.php?id={$row['id']}' onclick='return confirm(\"Are you sure you want to deactivate this user?\")'><span class='fa fa-lock' ></span> Deactivate</a>";
             else :
                 $action_buttons.="<a class='btn  btn-sm btn-success' href='activate.php?id={$row['id']}' onclick='return confirm(\"Are you sure you want to activate this user?\")'><span class='fa fa-unlock' ></span> Activate</a>";
             endif;
@@ -98,7 +98,7 @@ $where.= !empty($where) ? " AND ".$whereAll:"WHERE ".$whereAll;
 
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT u.id as id,u.employee_id as emp_id, e.code, CONCAT(e.first_name,' ',e.last_name) AS full_name,e.first_name,e.last_name, u.username as username, e.work_email as email, e.contact_no as contact_no,password,u.is_active, ut.description as user_type FROM users u INNER JOIN employees e ON e.id=u.employee_id JOIN user_type ut ON ut.id=u.user_type_id {$where} {$order} {$limit}";
+$complete_query="SELECT u.id as id,u.employee_id as emp_id, (SELECT CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name) FROM employees e WHERE e.id=u.employee_id) AS full_name, u.username as username,password,u.is_active, ut.description as user_type FROM users u JOIN user_type ut ON ut.id=u.user_type_id {$where} {$order} {$limit}";
             // echo $complete_query;
              //var_dump($bindings);
 

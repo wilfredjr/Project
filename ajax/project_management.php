@@ -144,7 +144,6 @@ function jp_bind($bindings)
 $whereAll.=$filter_sql;
 $where.= !empty($where) ? " AND ".$whereAll:"WHERE ".$whereAll;
 
-
 $join_query=" JOIN request_status rs ON rs.id=pa.request_status_id";
 
 $bindings=jp_bind($bindings);

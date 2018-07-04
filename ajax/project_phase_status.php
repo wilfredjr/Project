@@ -37,9 +37,6 @@ $columns = array(
             return 'Phase Revertion';
         }
     }),
-     array( 'db' => 'hours','dt' => ++$index ,'formatter'=>function ($d, $row) {
-        return htmlspecialchars($d);
-    }),
      array( 'db' => 'request_status','dt' => ++$index ,'formatter'=>function ($d, $row) {
         return htmlspecialchars($d);
     }),
@@ -55,12 +52,12 @@ $columns = array(
         'formatter' => function( $d, $row ) {
             $action_buttons="";
             global $employee_id;
-            if($row['employee_id']==$employee_id){
             global $con;
             $current=$con->myQuery("SELECT id FROM  project_files WHERE phase_request_id=? AND is_approved=0 AND is_deleted=0",array($row['id']))->fetch(PDO::FETCH_ASSOC);
             if(!empty($current['id'])){
                 $action_buttons.="<a href='download_file.php?id={$current['id']}&type=c' class='btn btn-default'><span class='fa fa-download'></span></a> ";
             }
+            if($row['employee_id']==$employee_id){
             if($row['request_status_id']=="3"):
                 $action_buttons.="<button class='btn btn-sm btn-info'  title='Query Request' onclick='query(\"{$row['id']}\")'><span  class='fa fa-question'></span></button>";
             endif;

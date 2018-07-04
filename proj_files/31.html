@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+
+<style type="text/css">
+    body{
+
+     
+   
+
+}
+
+</style>
+<link rel="stylesheet" href="Plugin/DT/dt.css">
+
+
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+ 
+
+    $(".show-text").click(function(){
+      $('#myModal').find(".lots-of-text").toggle();
+        $('#myModal').modal('handleUpdate');
+    });
+});
+</script>
+        <style type="text/css">
+
+#panel,#panel1 {
+  
+    display: none;
+    margin-left: 20px;
+    margin-right: 20px;
+
+}
+button 
+{
+  text-decoration: none !important;
+}
+label
+{
+  font-size:1em;
+  margin-left: 20px;
+}
+
+</style>
+<?php
+
+
+
+
+
+
+
+
+
+
+include 'isLoggedinadmin.php';
+
+
+
+
+?>
+<head>
+
+
+<?php if ($_SESSION['HorS']==1){?>
+<link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16" />
+    <title>Halcyon | Admin</title>
+
+ <?php } ?>
+
+
+<?php if ($_SESSION['HorS']==2){?>
+<link rel="icon" type="image/png" href="img/favicon1-32x32.png" sizes="32x32" />
+<link rel="icon" type="image/png" href="img/favicon1-16x16.png" sizes="16x16" />
+<title>ShiptoShore | Admin</title>
+
+ <?php } ?>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title></title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+    <!-- Your custom styles (optional) -->
+    <link href="css/style.css" rel="stylesheet">
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+<link href="css/Fontmoken.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+      <link rel="stylesheet" href="css/yesno.css">
+</head>
+
+
+
+  
+<script type="text/javascript">
+    
+  
+
+/*      function isNumberKey(evt)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if ((charCode < 48 || charCode > 57))
+            return false;
+
+         return true;
+      }
+      //-->
+
+
+      function isAlphabet(evt)
+      {
+         var charCode = (evt.which) ? evt.which : event.keyCode
+         if ( ((charCode <65 || charCode > 90 ) && (charCode <97 || charCode >122 ) && (charCode=32) )  )
+            return false;
+
+         return true;
+      }
+*/
+
+
+
+      $(document).ready(function() {
+    $("#isNumber").keydown(function (e) {
+        // Allow: backspace,space,tab,arrow
+        if ($.inArray(e.keyCode, [8,9,32,13,37,38,39,40]) !== -1 ||
+            //number
+            (e.keyCode >=48 && e.keyCode <=57 ) 
+         
+   ) {
+                 // let it happen, don't do anything
+                 return;
+        }
+     
+        else{
+            e.preventDefault();
+        
+        }
+    });
+
+
+
+       $("#isAlphabet").keydown(function (e) {
+        // Allow: backspace,space,tab,arrow keys,dot,comma
+        if ($.inArray(e.keyCode, [8,9,32,13,37,38,39,40,46,44]) !== -1 ||
+            //number
+            (e.keyCode >=65 && e.keyCode <=90 ) ||
+            (e.keyCode >=97 && e.keyCode <=122 ) 
+         
+   ) {
+                 // let it happen, don't do anything
+                 return;
+        }
+     
+        else{
+            e.preventDefault();
+        
+        }
+    });
+
+
+
+       $("#isSpecial").keydown(function (e) {
+        // Allow: backspace,space,tab,arrow keys,dot,comma
+        if ($.inArray(e.keyCode, [8,9,32,13,37,38,39,40]) !== -1 ||
+            //number
+            (e.keyCode >=65 && e.keyCode <=90 ) ||
+            (e.keyCode >=97 && e.keyCode <=122 ) 
+         
+   ) {
+                 // let it happen, don't do anything
+                 return;
+        }
+     
+        else{
+            e.preventDefault();
+        
+        }
+    });
+
+   $("#isLegal").keydown(function (e) {
+        // Allow: backspace,space,tab,arrow,dash
+        if ($.inArray(e.keyCode, [8,9,32,13,37,38,39,40,45]) !== -1 ||
+            //number
+            (e.keyCode >=48 && e.keyCode <=57 ) ||
+
+         
+   ) {
+                 // let it happen, don't do anything
+                 return;
+        }
+     
+        else{
+            e.preventDefault();
+        
+        }
+    });
+
+
+
+  $("#isMeasure").keydown(function (e) {
+        // Allow: backspace,space,tab,arrow,heights
+        if ($.inArray(e.keyCode, [8,9,32,13,37,38,39,40,44,34]) !== -1 ||
+            //number
+            (e.keyCode >=48 && e.keyCode <=57 ) ||
+
+         
+   ) {
+                 // let it happen, don't do anything
+                 return;
+        }
+     
+        else{
+            e.preventDefault();
+        
+        }
+    });
+
+
+
+
+
+});
+
+
+    
+      //-->
+      //-->
+
+
+</script>
+
+<body style="">
+    
+
+
+
+
+<?php if ($_SESSION['HorS']==1){?>
+<div style="background-color:white;">
+  
+<div class="container" >
+
+<center>
+<a href="admin.php">
+<img src="img/halogo.png"  style="width: 80%;height: 20%;" >
+</a>
+</center>
+</div>
+</div>
+
+ <?php } ?>
+
+
+<?php if ($_SESSION['HorS']==2){?>
+<header style="background-color:white;">
+  
+<div class="container" >
+
+<center>
+<a href="admin.php">
+<img src="img/Shiptoshore.png" style="width: 80%;height: 20%;">
+</a>
+</center>
+</div>
+</header>
+
+ <?php } ?>
+
+
+
+
+
+
+
+  <!--Navbar-->
+<nav >
+    
+
+<a href="createaccount.php"><section class="home" style="position: absolute; top:40px; right: 5%;" ><!-- 
+  <div class="open-overlay" style="top:3%" > -->
+  
+  <button type="submit" class="btn btn-default" name="Proceed" style="float:right;" >BACK</button>
+
+</section></a>
+
+</nav>
+
+
+<center><button id="addbtn" type='button'  style="width:45%;" class="btn btn-default">Add Account</button>
+<button id="addbtn1" type='button'  style="width:45%;" class="btn btn-default">Restore Account</button></center>
+
+  <!-- MultiStep Form -->
+    
+<div id="panel1">
+<div class="container" style="padding:20px 0px;">
+
+   <form action="account/res_account.php"  method="post">
+      <p align = "left">RESTORE ACCOUNT</p>
+       <select name="ra"  class="form-control selectpicker" required>
+  <?php 
+
+    $fetch1=mysqli_query($c1,'SELECT * From account where  `accessright`="25" and `isDeleted`="1"'); 
+    while($row1=mysqli_fetch_assoc($fetch1))
+    {
+      echo " <option value='$row1[userId]'>$row1[fullname]</option>";
+    }
+
+  ?>
+   </select>
+
+   <button type="submit" class="btn btn-default" name="Proceed" style="float:right;" >Submit</button>
+        
+
+</form>
+<br>
+<br>
+<br>
+    <hr>
+    <br>
+   </div>
+</div>
+
+
+
+<div id="panel" >
+ <div class="container" style="padding:20px 0px;" >
+
+
+
+
+<div class="row" style="background-color: white; padding: 10px; border-radius:5px;">
+    <div class="col-md-12 ">
+        <form action="account/accountsub.php" id="msform" method="post">
+            <!-- progressbar -->
+<!--             <ul id="progressbar">
+                <li class="active">Profile</li>
+                <li >Personal Details</li>
+                <li>Guardian Profiles</li>
+                <li>Address</li>
+                <li>Number</li>
+            </ul> -->
+            <!-- Basic Information  -->
+           
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+               <center> <h2 class="fs-title">Important Details</h2>
+                <h3 class="fs-subtitle">Required Information</h3>  </center>
+
+                    <?php 
+
+
+
+                   
+
+               $rows=mysqli_fetch_array(mysqli_query($c1,"SELECT MAX(empId) FROM account"));
+     
+                    ?>
+                <input type="text" name="a1" style="display:none" placeholder="Employee Number" value=<?php echo ($rows[0]+1); ?> />
+
+                     <input type="text" name="username" placeholder="Username"  required />
+
+                     <input type="Password" name="password" placeholder="Password" required/>
+                           <input type="Email" name="a35" placeholder="Email"  required/>
+
+ <p align = "left">Job Position</p>
+          <select name="a45"  class="form-control selectpicker" required>
+       <?php
+
+  
+
+            $table2 = "select * from positions ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[posCode]'>$row[position]</option>";
+        }
+        ?>
+    </select>
+  
+
+                <input type="text" name="a2" placeholder="Full Name"  id="isAlphabet" required/>
+              
+                <input type="text" name="a3" placeholder="First Name " id="isAlphabet" required/>
+                <input type="text" name="a4" placeholder="Middle Name" id="isAlphabet" required/>
+                <input type="text" name="a5" placeholder="Last Name " id="isAlphabet"  required/>
+               <input type="text" name="a6" placeholder="Nick Name " id="isAlphabet" required/>
+            
+            <!--     <input type="button" name="next" class="next action-button" value="Next"/> -->
+      <!--       </fieldset> -->
+ </div>  
+ <hr>          
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+<!--             <fieldset> -->
+            <center>    <h2 class="fs-title">Personal Details</h2>
+                <h3 class="fs-subtitle">Basic Information</h3>   </center>
+            <!--     <input type="text" name="a6" placeholder="Gender"/> -->
+     
+ <p align = "left">Gender</p>
+     <select name="a61"  class="form-control selectpicker" required>
+           
+
+    <option value='MALE'>MALE</option>
+     <option value='FEMALE'>FEMALE</option>
+    
+    </select>
+    <br>
+
+
+                  <p align = "left">Civil Status</p>
+                  <select name="a7"  class="form-control selectpicker">
+       <?php
+
+  
+
+            $table2 = "select * from civilstatus ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[csId]' >$row[cStatus]</option>";
+        }
+        ?>
+    </select>
+    
+                <p align = "left">Birthday</p><input type="date" name="a8" placeholder="Birthday" />
+                <input type="text" name="a9" placeholder="Birthplace" id="isSpecial"  required/>
+                <input type="text" name="a10" placeholder="Nationality" id="isSpecial" required/>
+                <input type="text" name="a11" placeholder="Religion" id="isSpecial" required/>
+    <!--             <input type="text" name="civilStatus" placeholder="Civil Status"/> -->
+
+
+                 <input type="text" name="a12" placeholder="Height" id="isMeasure" required/>
+                <input type="text" name="a13" placeholder="Weight" maxlength="3" id="isNumber" required/>
+         <!-- 
+                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/> -->
+        <!--         <input type="button" name="next" class="next action-button" value="Next"/> -->
+<!--             </fieldset> -->
+             
+              <!-- Guardian  -->
+ </div>  
+ <hr>          
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+   <!--          <fieldset> -->
+              <center> <h2 class="fs-title">Guardian Profiles</h2>
+                <h3 class="fs-subtitle">Information about your Guardians</h3></center> 
+                <input type="text" name="a14" placeholder="Mother First Name:" id="isAlphabet" required/>
+                <input type="text" name="a15" placeholder="Mother Middle Name:" id="isAlphabet" required/>
+                <input type="text" name="a16" placeholder="Mother Last Name:" id="isAlphabet" required/>
+                <input type="text" name="a17" placeholder="Father First Name:" id="isAlphabet" required/>
+                <input type="text" name="a18" placeholder="Father Middle Name:" id="isAlphabet" required/>
+                <input type="text" name="a19" placeholder="Father Last Name:" id="isAlphabet" required/>
+                <input type="text" name="a20" placeholder="Spouse First Name:" id="isAlphabet" required/>
+                <input type="text" name="a21" placeholder="Spouse Middle Name: " id="isAlphabet" required/>
+                <input type="text" name="a22" placeholder="Spouse Last Name:" id="isAlphabet" required/>
+               
+<!--                 <input type="button" name="previous" class="previous action-button-previous" value="Previous"/> -->
+              <!--   <input type="button" name="next" class="next action-button" value="Next"/> -->
+ <!--            </fieldset> -->
+
+ </div>  
+ <hr>          
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+
+            <!-- Address  -->
+
+      <!--            <fieldset> -->
+                <center><h2 class="fs-title">Address</h2>
+                <h3 class="fs-subtitle">Emergency Address</h3></center>
+                <input type="text" name="a23" placeholder="Emergency Person:" id="isAlphabet" required/>
+                <input type="text" name="a24" placeholder="Emergency Relation:" id="isSpecial" required/>
+                <input type="text" name="a25" placeholder="Emergency Contact:" id="isNumber" required/>
+                <input type="text" name="a26" placeholder="Emergency Address 1:" required/>
+                <input type="text" name="a27" placeholder="Emergency Address 2:" required/>
+                <input type="text" name="a28" placeholder="Emergency Address 3: " required/> 
+                 <p align = "left">Date Hired</p> <input type="date" name="a29" placeholder="Date Hired:" required/>
+                 <p align = "left">Date Regular</p> <input type="date" name="a30" placeholder="Date Regular:" required/>
+                 <p align = "left">Date Separated</p> <input type="date" name="a31" placeholder="Date Seperated:" required/>
+                <!-- <input type="text" name="a32" placeholder="Seperation Reason  " /> -->
+                <p align = "left">Separation Reason</p>
+ <select name="a32"  class="form-control selectpicker">
+       <?php
+
+  
+
+            $table2 = "select * from separated ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[separatedId]' >$row[reason]</option>";
+        }
+        ?>
+    </select>
+
+
+<!-- 
+                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/> -->
+           <!--      <input type="button" name="next" class="next action-button" value="Next"/> -->
+         <!--    </fieldset> -->
+
+
+ </div>  
+ <hr>          
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+       <!-- Others  -->
+<!-- 
+                 <fieldset> -->
+               <center> <h2 class="fs-title">Number </h2>
+                <h3 class="fs-subtitle">Other Information</h3></center>
+                <input type="text" name="a33" placeholder="Telephone" maxlength="8" id="isLegal" required/>
+                <input type="text" name="a34" placeholder="Cellphone" maxlength="11" id="isNumber" required/>
+          
+                <input type="text" name="a36" placeholder="SSS No" maxlength="12" id="isLegal" required/>
+                <input type="text" name="a37" placeholder="Tin No" maxlength="11" id="isLegal" required/>
+                 <input type="text" name="a38" placeholder="Address 1" required/>
+                  <input type="text" name="a39" placeholder="Address 2" required/>
+                   <input type="text" name="a40" placeholder="Address 3" required/>
+ <p align = "left">City</p>
+       <select name="a41"  class="form-control selectpicker">
+       <?php
+
+  
+
+            $table2 = "select * from cities ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[cityId]' >$row[city]</option>";
+        }
+        ?>
+    </select>
+     <p align = "left">Province</p>
+    <br> <select name="a42"  class="form-control selectpicker">
+       <?php
+
+  
+
+            $table2 = "select * from provinces ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[provId]' >$row[province]</option>";
+        }
+        ?>
+    </select>
+    
+                <input type="text" name="a43" placeholder="Zip Code :" id="isNumber" />
+               <!--  <input type="text" name="a44" placeholder="Country :" required/> -->
+
+
+           
+     <p align = "left">Country</p>
+<select name="a44"  class="form-control selectpicker" required >
+       <?php
+
+  
+
+            $table2 = "select * from country ";
+            $run_query2b = mysqli_query($c1,$table2);
+
+            while($row = mysqli_fetch_array($run_query2b))
+
+        {  
+        ?>
+  
+        <?php
+
+        echo "<option value='$row[country_name]' >$row[country_name]</option>";
+        }
+        ?>
+    </select>
+      <!-- 
+
+                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/> -->
+
+                 </div>  
+ <hr>          
+<div style="background-color: rgba(59,166,208,0.2); padding: 50px;border-radius:5px; ">
+               <input type="submit" name="Proceed"  class="btn btn-default" value="Submit"/>
+        </div>
+
+
+
+
+
+
+        </form>
+     
+
+
+
+
+
+
+
+
+
+
+    </div>
+</div>
+<!-- /.MultiStep Form -->
+</div><!-- panel -->
+  </div>
+</div>
+
+
+
+
+
+<div class="container" style="background-color: white;border-radius: 5px; padding: 20px;"  >
+
+<table id="account" class="display" cellspacing="0" width="100%" style="background-color: white;">
+        <thead >
+            <tr>
+              <th>User Id</th>
+              <th>Fullname</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Position</th>
+              <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+                   <?php 
+   
+    $fetch=mysqli_query($c1,'SELECT * From account where  `accessright`="25" and `isDeleted`="0"'); 
+    while($row=mysqli_fetch_assoc($fetch))
+    {
+
+  ?>
+        <tr>
+            <td scope="row" style="vertical-align: middle;"><?php echo $row['userId']; ?></td>
+
+            <td style="color: black;background-color: white;vertical-align: middle;"><?php echo $row['fullname']; ?></td>
+
+
+
+            <td style="color: black;background-color: white;vertical-align: middle;"><?php echo $row['username']; ?></td>
+
+
+
+            <td style="color: black;background-color: white;vertical-align: middle;"><?php echo $row['email']; ?></td>
+
+            <?php
+
+                 $fetchx=mysqli_query($c1,'SELECT * From positions where  `positionId`="'.$row['positionId'].'" '); 
+ $rowx=mysqli_fetch_assoc($fetchx);
+        
+          ?>
+            <td style="color: black;background-color: white;vertical-align: middle;"><?php echo $rowx['position']; ?></td>
+
+        
+
+            <?php    
+      echo "<td style='color: black;background-color: white;vertical-align: middle;' >";
+  
+  $Mymodal="Mymodal".$row['userId'];
+$Yourmodal="Yourmodal".$row['userId'];
+    echo '<center>
+
+
+
+     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#'.$Mymodal.'" ><i class="fa fa-edit"></i></button>
+     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#'.$Yourmodal.'"><i class="fa fa-remove"></i></button></center>';
+
+
+
+
+  echo "</td>";
+
+
+
+echo
+"
+    
+    <!-- Modal HTML -->
+    <div id='".$Mymodal."' class='modal fade'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                    <h4 class='modal-title'>EDIT FORM </h4>
+                </div>
+                <div class='modal-body'>
+        
+
+
+ <form  role='form' action='account/edit_account.php' method='post' enctype='multipart/form-data'>
+    <div class='form-group'>
+
+      <input type='text' class='form-control' name='ea1'   style='opacity:0;z-index:-9999;position:absolute;' value='".$row['userId']."'>
+      
+         <br>
+         Full Name:
+
+      <input type='text' class='form-control'  name='ea2' placeholder='".$row['fullname']."' >
+         <br>
+     Userame:
+
+      <input type='text' class='form-control'  name='ea3' placeholder='".$row['username']."' >
+      
+         <br>
+          Password:
+
+      <input type='password' class='form-control'  name='ea4' placeholder='**********' >
+      <br>
+
+       Email:
+
+      <input type='email' class='form-control'  name='ea5' placeholder='".$row['email']."' >
+
+
+
+";
+?>
+
+    </div>
+
+<?php
+echo "
+
+ 
+
+
+
+                </div>
+                <div class='modal-footer'>
+                    <button type='submit' name='submit_edit' class='btn btn-success'>Save</button>
+                    <button type='button' class='btn btn-danger' data-dismiss='modal'>Close</button>
+  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+";
+//==========================================================================
+  echo
+"
+    
+    <!-- Modal HTML -->
+    <div id='".$Yourmodal."' class='modal fade'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>
+                    <h4 class='modal-title'>DELETE FORM </h4>
+                </div>
+                <div class='modal-body'>
+                 
+ <form  role='form' action='account/del_account.php' method='post' >
+    <div class='form-group'>
+      <input type='text' class='form-control'  name='delID'  style='opacity:0;display:none;' value='".$row['userId']."'>
+      <label ><center>Are you sure you want to delete '".$row['fullname']."' ?</center></label>
+      
+    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button type='submit' name='submit_delete'  class='btn btn-success'>Yes</button>
+                    <button type='button' class='btn btn-danger' data-dismiss='modal'>No</button>
+  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+";
+  
+  echo "</tr>";
+
+
+
+
+  ?>
+      <?php
+       }
+
+    ?>
+      
+        </tbody>
+    </table>
+
+
+
+
+
+  <!--Table-->
+
+<!--Table-->
+</div>
+</div>
+
+
+
+
+
+</body>
+
+
+
+
+      <script type="text/javascript" src="js/tether.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+
+
+<script src="Plugin/DT/dt.js"></script>
+<script src="Plugin/DT/dt1.js"></script>
+<script src="Plugin/DT/dt2.js"></script>
+<script>
+$(document).ready(function(){
+    $('#account').DataTable({
+    
+
+   });
+
+    $("#addbtn").click(function(){
+   
+        $("#panel").slideToggle("slow");
+    });
+      $("#addbtn1").click(function(){
+   
+        $("#panel1").slideToggle("slow");
+    });
+  
+  
+
+
+});
+</script>
+</html>

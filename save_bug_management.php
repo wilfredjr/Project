@@ -164,8 +164,6 @@ if(!empty($_POST)){
 			'team_lead_ba'=>$team_lead_ba,
 			'team_lead_dev'=>$team_lead_dev,
 			'cur_phase'=>"1",
-            'team_lead_ba'=>$team_lead_ba,
-            'team_lead_dev'=>$team_lead_dev
 			);
 
 		$con->myQuery("INSERT INTO project_bug_list (employee_id,project_id,name,bug_rate_id,description,project_status_id,date_filed,date_start,date_end,manager_id,team_lead_ba, team_lead_dev,bug_phase_id) VALUES (:employee_id,:project_id,:name,:bug_rate_id,:description,:proj_sta,:date_start,:date_start,:date_end,:manager,:team_lead_ba,:team_lead_dev,:cur_phase)",$params);

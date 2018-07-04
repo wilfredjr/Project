@@ -45,6 +45,10 @@
 
 				endwhile;
 
+				$validate_task=$con->myQuery("SELECT id FROM project_task_list WHERE employee_id=? AND status_id != 2 AND project_id=?",array($inputs['employee_id'],$inputs['id']))->fetch(PDO::FETCH_ASSOC);
+				if(!empty($validate_task)){
+					$errors.="<li>Task/s are still assigned to the employee.</li>";
+				}
 				if($errors!=""){
 
 				Alert("You have the following error/s: <br/>".$errors,"danger");
@@ -125,7 +129,17 @@
 
 
 
-			redirect("my_projects_view.php?id=".$inputs['id']."&tab=2");
+			redirect("my_projects_view.php?id=".$inputs['id']."&tab=3");
+
+			die();
+		}else{
+			$con->myQuery("UPDATE project_requests SET is_deleted=1 WHERE project_id=".($inputs['id'])." AND requested_employee_id=".($inputs['emp_id']));
+			//$con->myQuery("UPDATE employees_shift_details SET is_deleted=1 WHERE employee_shift_master_id=?",array($inputs['id']));
+			Alert("Delete Successful.","success");
+
+
+
+			redirect("project_employee_request.php");
 
 			die();
 		}

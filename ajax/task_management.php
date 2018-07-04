@@ -32,7 +32,7 @@ $columns = array(
         array( 'db' => 'leader_name_dev','dt' => ++$index ,'formatter'=>function($d,$row){
         return htmlspecialchars($d);
     }),
-        array( 'db' => 'manager_id','dt' => ++$index ,'formatter'=>function($d,$row){
+        array( 'db' => 'manager_name','dt' => ++$index ,'formatter'=>function($d,$row){
         return htmlspecialchars($d);
     }),
 
@@ -66,10 +66,8 @@ $whereResult="";
 // FROM projects p 
 // JOIN projects_employees pe ON pe.project_id=p.id JOIN project_status ps ON p.project_status_id=ps.id
 // WHERE pe.employee_id=? AND p.is_deleted=0",array($_SESSION[WEBAPP]['user']['employee_id']))->fetchAll(PDO::FETCH_ASSOC);
-$whereAll=" pe.employee_id=:employee_id AND p.is_deleted=0 AND p.project_status_id!=2 AND
-((SELECT pe.employee_id FROM projects_employees pe WHERE pe.is_team_lead_ba=1 AND pe.project_id=p.id)=:employee_id OR
-(SELECT pe.employee_id FROM projects_employees pe WHERE pe.is_team_lead_dev=1 AND pe.project_id=p.id)=:employee_id OR
-p.manager_id=:employee_id)";
+$whereAll="p.is_deleted=0 AND p.project_status_id!=2 AND
+((p.team_lead_ba=:employee_id) OR (p.team_lead_dev=:employee_id) OR (p.manager_id=:employee_id))";
     $filter_sql="";
     $filter_sql.=" ";
     $bindings[]=array('key'=>'employee_id','val'=>$_SESSION[WEBAPP]['user']['employee_id'],'type'=>0);
@@ -149,21 +147,19 @@ $where.= "WHERE ".$whereAll;
 $join_query="";
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT p.id,p.name,p.description,p.start_date,p.end_date,pe.employee_id,p.project_status_id,ps.status_name,
-(SELECT pe.employee_id FROM projects_employees pe WHERE pe.is_team_lead_ba=1 AND pe.project_id=p.id) AS leader_ba,
-(SELECT CONCAT(last_name,', ',first_name) FROM employees WHERE id=leader_ba) AS leader_name_ba,
-(SELECT pe.employee_id FROM projects_employees pe WHERE pe.is_team_lead_dev=1 AND pe.project_id=p.id) AS leader_dev,
-(SELECT CONCAT(last_name,', ',first_name) FROM employees WHERE id=leader_dev) AS leader_name_dev,
-(SELECT CONCAT(e.last_name,', ',e.first_name) FROM employees e JOIN projects_employees pe WHERE pe.is_manager=1 AND pe.project_id=p.id AND pe.employee_id=e.id) AS manager_id
+$complete_query="SELECT p.id,p.name,p.description,p.start_date,p.end_date,p.project_status_id,ps.status_name,p.team_lead_ba,p.team_lead_dev,p.manager_id,
+(SELECT CONCAT(last_name,', ',first_name) FROM employees WHERE id=p.team_lead_ba) AS leader_name_ba,
+(SELECT CONCAT(last_name,', ',first_name) FROM employees WHERE id=p.team_lead_dev) AS leader_name_dev,
+(SELECT CONCAT(e.last_name,', ',e.first_name) FROM employees e WHERE e.id=p.manager_id) AS manager_name
 FROM projects p 
-JOIN projects_employees pe ON pe.project_id=p.id JOIN project_status ps ON p.project_status_id=ps.id {$where} {$order} {$limit}";
+JOIN project_status ps ON p.project_status_id=ps.id {$where} {$order} {$limit}";
             // echo $complete_query;
              //var_dump($bindings);
 
 $data=$con->myQuery($complete_query,$bindings)->fetchAll();
 $recordsFiltered=$con->myQuery("SELECT FOUND_ROWS();")->fetchColumn();
 
-$recordsTotal=$con->myQuery("SELECT COUNT(p.id) FROM `projects` p JOIN projects_employees pe ON pe.project_id=p.id {$where};",$bindings)->fetchColumn();
+$recordsTotal=$con->myQuery("SELECT COUNT(p.id) FROM `projects` p JOIN project_status ps ON p.project_status_id=ps.id {$where};",$bindings)->fetchColumn();
 
 $json['draw']=isset ( $request['draw'] ) ?intval( $request['draw'] ) :0;
 $json['recordsTotal']=$recordsTotal;

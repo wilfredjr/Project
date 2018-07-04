@@ -100,9 +100,9 @@ $whereResult="";
   //   FROM vw_employees_allowances
   //   ",array("employee_id"=>$_SESSION[WEBAPP]['user']['employee_id']));
 if(!empty($_GET['id'])){
-    $whereAll="(pbl.manager_id='$employee_id' OR pbl.team_lead_ba='$employee_id' OR pbl.team_lead_dev='$employee_id' OR pbl.ba_test='$employee_id' OR pbl.dev_control='$employee_id' OR pbl.employee_id='$employee_id') AND pbl.project_id=".$_GET['id'];
+    $whereAll="(pbl.manager_id='$employee_id' OR pbl.team_lead_ba='$employee_id' OR pbl.team_lead_dev='$employee_id' OR pbl.ba_test='$employee_id' OR pbl.dev_control='$employee_id' OR pbl.employee_id='$employee_id' OR pbl.admin_id='$employee_id') AND pbl.project_id=".$_GET['id'];
 }else{
-        $whereAll="pbl.employee_id='$employee_id'"; 
+        $whereAll="(pbl.manager_id='$employee_id' OR pbl.team_lead_ba='$employee_id' OR pbl.team_lead_dev='$employee_id' OR pbl.ba_test='$employee_id' OR pbl.dev_control='$employee_id' OR pbl.employee_id='$employee_id' OR pbl.admin_id='$employee_id')"; 
 }
     $filter_sql="";
     $filter_sql.=" ";
@@ -173,7 +173,7 @@ JOIN project_bug_phase pbp ON pbl.bug_phase_id=pbp.id JOIN project_bug_rate pbr 
 
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT pbl.id,pbl.name as bug_name,pbl.description,p.name AS project_name, pbl.project_id,pbl.project_status_id,pbp.name as phase_name, ps.status_name, pbl.date_filed,pbl.date_start,pbl.date_end,pbr.desc as bug_rate,
+$complete_query="SELECT pbl.id,pbl.name as bug_name,pbl.description,p.name AS project_name, pbl.project_id,pbl.project_status_id,pbp.name as phase_name, ps.status_name, pbl.date_filed,pbl.date_start,pbl.date_end,pbr.desc as bug_rate,pbl.admin_id,
 (SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pbl.manager_id) AS manager,
 (SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pbl.team_lead_ba) AS team_lead_ba,
 (SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pbl.team_lead_dev) AS team_lead_dev

@@ -37,7 +37,7 @@ $columns = array(
             $action_buttons="";
             $current=$con->myQuery("SELECT id FROM  project_files WHERE project_application_id=? AND is_approved=0 AND is_deleted=0",array($row['id']))->fetch(PDO::FETCH_ASSOC);
             if(!empty($current['id'])){
-                $action_buttons.="<a href='download_file.php?id={$current['id']}&type=c' class='btn btn-default'><span class='fa fa-download'></span></a><br> ";
+                $action_buttons.="<a href='download_file.php?id={$current['id']}&type=c' class='btn btn-default'><span class='fa fa-download'></span></a> ";
             }
             $action_buttons.="<form method='post' action='move_approval.php' style='display: inline' onsubmit='return confirm(\"Approve This Request?\")'>";
             $action_buttons.="<input type='hidden' name='id' value={$row['id']}>";
@@ -118,7 +118,7 @@ if (!empty($_GET['employee_id1'])) {
     if(!empty($date_start))
     {
         $date_filter.=!empty($filter_sql)?" AND ":"";
-        $date_filter.=" date_filed >= :date_start";
+        $date_filter.=" pa.date_filed >= :date_start";
         $bindings[]=array('key'=>'date_start','val'=>date_format($date_start,'Y-m-d'),'type'=>0);
     }
     $filter_sql.=$date_filter;
@@ -127,7 +127,7 @@ if (!empty($_GET['employee_id1'])) {
     if(!empty($date_end))
     {
         $date_filter.=!empty($filter_sql)?" AND ":"";
-        $date_filter.=" date_filed <= :date_end";
+        $date_filter.=" pa.date_filed <= :date_end";
         $bindings[]=array('key'=>'date_end','val'=>date_format($date_end,'Y-m-d'),'type'=>0);
     }
     $filter_sql.=$date_filter;

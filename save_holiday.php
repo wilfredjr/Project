@@ -5,7 +5,7 @@ if (!isLoggedIn()) {
         die();
 }
 
-if (!AllowUser(array(1,4))) {
+if (!AllowUser(array(4))) {
          redirect("index.php");
 }
 
@@ -21,10 +21,6 @@ if (!empty($_POST)) {
 
     if (empty($inputs['holiday_date'])) {
             $errors.="<li>Enter Holiday Date. </li>";
-    }
-
-    if (empty($inputs['holiday_category'])) {
-            $errors.="<li>Select Holiday Category. </li>";
     }
 
     if ($errors!="") {
@@ -46,12 +42,12 @@ if (!empty($_POST)) {
                 //Insert
                 unset($inputs['id']);
                 
-                $con->myQuery("INSERT INTO holidays(holiday_name,holiday_date,holiday_day,holiday_category) VALUES(:holiday_name,:holiday_date,:holiday_day,:holiday_category)", $inputs);
+                $con->myQuery("INSERT INTO holidays(holiday_name,holiday_date,holiday_day) VALUES(:holiday_name,:holiday_date,:holiday_day)", $inputs);
                 insertAuditLog($_SESSION[WEBAPP]['user']['last_name'].", ".$_SESSION[WEBAPP]['user']['first_name']." ".$_SESSION[WEBAPP]['user']['middle_name'], "Created new holiday.");
             } else {
                 //Update
                 
-                $con->myQuery("UPDATE holidays SET holiday_name=:holiday_name,holiday_date=:holiday_date,holiday_day=:holiday_day,holiday_category=:holiday_category,payroll_group_id=:company_id WHERE id=:id", $inputs);
+                $con->myQuery("UPDATE holidays SET holiday_name=:holiday_name,holiday_date=:holiday_date,holiday_day=:holiday_day WHERE id=:id", $inputs);
                 insertAuditLog($_SESSION[WEBAPP]['user']['last_name'].", ".$_SESSION[WEBAPP]['user']['first_name']." ".$_SESSION[WEBAPP]['user']['middle_name'], "Modified holiday with an id of {$inputs['id']}.");
             }
             Alert("Save succesful", "success");

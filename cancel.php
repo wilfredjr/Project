@@ -138,11 +138,25 @@
 			case 'bug':
 				$bug=$_POST['bug_id'];
 				$table="project_bug_request";
+				if(empty($bug)){
+					$page="bug_phase_request.php";
+				}else{
 				$page="bugs_view.php?id=".$bug;
+				}
 				break;
 			case 'dev':
 				$table="project_development";
 				$page="project_development_request.php";
+				break;
+			case 'bug_app':
+				$proj=$_POST['proj_id'];
+				$table="project_bug_application";
+				$page="bug_management_project.php?id=".$proj;
+				break;
+			case 'bug_emp':
+				$proj=$_POST['proj_id'];
+				$table="project_bug_employee";
+				$page="bug_employee_request.php";
 				break;
 			default:
 				redirect("index.php");
@@ -164,6 +178,9 @@
 			$con->myQuery("UPDATE {$table} SET request_status_id=5,date_cancelled = NOW() WHERE id=?",array($id));
 			$con->myQuery("UPDATE project_files SET is_deleted =1 WHERE project_dev_id=?",array($id));
 			$con->myQuery("UPDATE {$table} SET request_status_id =1  WHERE id=?",array($dev['phase_request_id']));
+		}elseif($_POST['type']=='bug_app'){
+			$con->myQuery("UPDATE {$table} SET request_status_id =5,date_cancelled = NOW() WHERE id=?",array($id));
+			$con->myQuery("UPDATE bug_files SET is_deleted =1 WHERE bug_list_id=?",array($id));
 		}else{
 		$con->myQuery("UPDATE {$table} SET request_status_id =5,date_cancelled = NOW() WHERE id=?",array($id));}
 		Alert("Cancel Request Successful","success");

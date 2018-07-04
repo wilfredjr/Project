@@ -23,9 +23,6 @@
 									FROM payroll_details p 
 									INNER JOIN employees e ON p.employee_id=e.id 
 									WHERE p.employee_id = ?",array($_GET['cd']))->fetch(PDO::FETCH_ASSOC);
-	}else
-	{
-		redirect("../payroll/pay_slip.php");
 	}
 
 	makeHead("Receipt Payment Document Fee",1);

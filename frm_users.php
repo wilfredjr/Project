@@ -5,7 +5,7 @@
 		die();
 	}
 
-    if(!AllowUser(array(1,4))){
+    if(!AllowUser(array(4))){
         redirect("index.php");
     }
 
@@ -62,7 +62,7 @@
                   <div class="row">
                 	<div class='col-md-12'>
                   
-		              	<form class='form-horizontal disable-submit' action='save_users.php' method="POST" name='frm_user' onsubmit='return validate(this)'>
+		              	<form class='form-horizontal' action='save_users.php' method="POST" name='frm_user' onsubmit='return validate(this)'>
 
                       <input type='hidden' name='get_id' value='<?php echo !empty($get_id)?$get_id:''; ?>'>
 		              		<input type='hidden' name='id' value='<?php echo !empty($data)?$data['id']:''; ?>'>
@@ -80,9 +80,9 @@
                           </div>
                         </div>
                         <div class="form-group">
-                          <label for="name" class="col-sm-2 control-label">Middle Name *</label>
+                          <label for="name" class="col-sm-2 control-label">Middle Name </label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id=mname placeholder="Middle Name" name='mname' value='<?php echo !empty($data)?htmlspecialchars($data['middle_name']):''; ?>' required>
+                            <input type="text" class="form-control" id=mname placeholder="Middle Name" name='mname' value='<?php echo !empty($data)?htmlspecialchars($data['middle_name']):''; ?>'>
                           </div>
                         </div>
                         <div class="form-group">
@@ -115,7 +115,7 @@
                         <div class='form-group'>
                           <label for="name" class="col-sm-2 control-label">User Type *</label>  
                             <div class='col-sm-9'>
-                              <select class='form-control cbo' name='utype_id' data-placeholder="Select User Type" <?php echo!(empty($data))?"data-selected='".$data['user_type_id']."'":NULL ?> required>
+                              <select class='form-control cbo' name='utype_id' data-placeholder="Select User Type" <?php echo!(empty($data))?"data-selected='".$data['user_type_id']."'":NULL ?> required <?php if($data['user_type_id']=='4') {?> disabled <?php } ?> >
                                 <?php
                                   echo makeOptions($user_type);
                                 ?>  
@@ -164,7 +164,7 @@
 
       if (js_new_pass !== js_confirm_pass) 
       {
-        alert("Retry Confirm Password.");
+        r=confirm("Retry Confirm Password.");
         return false;
       }
       if (checkPassword(js_new_pass)==false)

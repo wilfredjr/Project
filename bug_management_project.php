@@ -9,7 +9,7 @@
     // if ($usertype!=5) {
     //     redirect("index.php");
     // }
-  makeHead("Bug Task Assignment");
+  makeHead("Bug Application - Project");
 ?>
 
 <?php
@@ -20,7 +20,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header text-center">
           <h1 class="page-header">
-                Bug Task Assignment
+                Bug Application - Project
             </h1>
         </section>
             <div class='panel panel-default'>
@@ -57,8 +57,7 @@
                     </div> -->
                     <label class="col-sm-3 control-label">Status *</label>
                     <div class='col-sm-3'>
-                            <select class='form-control cbo' name='status' id='status' data-allow-clear='True' data-placeholder="Select Status">
-                            <?php echo makeOptions($project_status); ?>
+                            <select class='form-control cbo-request-status-id' name='status' id='status' data-allow-clear='True' data-placeholder="Select Status">
                             </select>
                     </div>
                 </div>
@@ -97,12 +96,9 @@
                               <th class='text-center date-td'>Date Filed</th>
                               <th class='text-center'>Project</th>
                               <th class='text-center'>Bug Name</th>
-                              <th class='text-center'>Current Phase</th>
-                              <th class='text-center date-td'>Date Start</th>
-                              <th class='text-center date-td'>Date End</th>
                               <th class='text-center'>Bug Rating</th>
                               <th class='text-center'>Manager</th>
-                              <th class='text-center' width="50%">Description</th>
+                              <th class='text-center'>Description</th>
                               <th class='text-center'>Status</th>
                               <th class='text-center'>Action</th>
                             </tr>
@@ -121,8 +117,8 @@
         </section><!-- /.content -->
   </div>
 <?php
-  $request_type="project_approval_phase";
-  $redirect_page="project_phase_request.php";
+  $request_type="bug_application_approval";
+  $redirect_page="bug_management_project.php?id=".$_GET['id'];
   require_once("include/modal_query.php");
   require_once("include/pic_modal.php");
   require_once("include/modal_query_logs.php");
@@ -139,7 +135,7 @@ $(document).ready(function ()
         "searching": false,
         "ajax":
         {
-            "url":"ajax/bug_management_request.php?id=<?php echo !empty($_GET['id'])?intval($_GET['id']):"";?>",
+            "url":"ajax/bug_application_request.php?id=<?php echo !empty($_GET['id'])?intval($_GET['id']):"";?>",
             "data":function(d)
             {
                 d.date_start=$("input[name='date_start']").val();

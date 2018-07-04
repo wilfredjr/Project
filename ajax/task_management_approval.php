@@ -67,7 +67,11 @@ $whereResult="";
 FROM project_task pt";
 $join="JOIN request_status rs ON pt.request_status_id=rs.id JOIN projects p ON pt.project_id=p.id
 JOIN employees e ON pt.employee_id=e.id JOIN project_phases pp ON pt.project_phase_id=pp.id";
-$filter_sql="pt.manager_id=:employee_id AND pt.request_status_id='1'";
+$filter_sql="pt.request_status_id='1' AND (SELECT   
+                         CASE   
+                            WHEN pt.step_id=2 THEN pt.manager_id 
+                            WHEN pt.step_id=3 THEN pt.admin_id
+                         END=:employee_id)";
 $filter_sql.="";
 // $filter_sql.=" :employee_id IN (SELECT employee_id FROM approval_steps_employees WHERE approval_step_id = step_id) AND request_status_id=1 ";
  $bindings[]=array('key'=>'employee_id','val'=>$_SESSION[WEBAPP]['user']['employee_id'],'type'=>0);

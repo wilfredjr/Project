@@ -44,7 +44,7 @@ makeHead("Project Schedule");
 		 <div class='row'>
                     <div class='col-sm-12'>
                     
-                        <form method='get' class='form-horizontal' id='frm_search'>
+                        <form method='get' class='form-horizontal' id='frm_search' onsubmit='return validate(this)'>
                         <input type='hidden' value="<?php echo $_GET['action'];?>" name='page'>
                         <div class='form-group'>
 
@@ -134,6 +134,16 @@ function filter_search()
 {
     data_table.ajax.reload();
 }
+
+   function validate(frm_search) {
+
+    if(Date.parse($("#start_date").val()) < Date.parse($("#end_date").val())){
+      alert("Date Start cannot be greater than Date End.");
+      return false;
+    }
+
+    return true;
+  }
 </script>
 <?php
 makeFoot(WEBAPP);

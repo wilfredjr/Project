@@ -31,10 +31,10 @@
     // FROM project_employees
     // WHERE project_id=?",array($_SESSION[WEBAPP]['user']['employee_id']));
   $employee_id=$_SESSION[WEBAPP]['user']['employee_id'];
-    $project_manager=$con->myQuery("SELECT e.id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name), e.pay_grade_id, pg.can_manage_projects FROM employees e JOIN pay_grade pg ON pg.id=e.pay_grade_id WHERE pg.can_manage_projects=1 AND e.is_deleted=0 AND e.is_terminated=0")->fetchAll(PDO::FETCH_ASSOC);
-    $ba=$con->myQuery("SELECT e.id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) as employee_name FROM employees e JOIN departments ON e.department_id=departments.id WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='2'")->fetchAll(PDO::FETCH_ASSOC);
-        $dev=$con->myQuery("SELECT e.id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) as employee_name FROM employees e JOIN departments ON e.department_id=departments.id WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='1'")->fetchAll(PDO::FETCH_ASSOC);
-        $manager_name=$con->myQuery("SELECT e.id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) as employee_name FROM employees e WHERE e.id='$employee_id'")->fetch(PDO::FETCH_ASSOC);
+    $project_manager=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name), e.pay_grade_id, pg.can_manage_projects FROM employees e JOIN pay_grade pg ON pg.id=e.pay_grade_id WHERE pg.can_manage_projects=1 AND e.is_deleted=0 AND e.is_terminated=0")->fetchAll(PDO::FETCH_ASSOC);
+    $ba=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name) as employee_name FROM employees e WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='2'")->fetchAll(PDO::FETCH_ASSOC);
+        $dev=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name) as employee_name FROM employees e WHERE e.is_deleted=0 AND e.is_terminated=0 AND e.utype_id='1'")->fetchAll(PDO::FETCH_ASSOC);
+        $manager_name=$con->myQuery("SELECT e.id,CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name) as employee_name FROM employees e WHERE e.id='$employee_id'")->fetch(PDO::FETCH_ASSOC);
     // echo "<pre>";
     // print_r($project_manager);
     // echo "</pre>";
@@ -111,15 +111,15 @@
 
                                         <label for="proj_name" class="col-sm-2 control-label">Project Name: </label>
                                         <div class='col-sm-9'>
-                                            <input type='text' class="form-control" name='proj_name' value='<?php echo !empty($data)?htmlspecialchars($data['name']):''; ?>' required>
+                                            <input type='text' class="form-control" name='proj_name' placeholder="Project Name" value='<?php echo !empty($data)?htmlspecialchars($data['name']):''; ?>' required>
                                         </div>
                                     </div> 
-                                    <div class="form-group">
+<!--                                     <div class="form-group">
                                         <label for="date_start" class="col-md-2 control-label">Project Start Date: </label>
                                         <div class="col-md-9">
                                             <input type="text" value='<?php echo !empty($data)?htmlspecialchars($data['start_date']):''; ?>' class="form-control date_picker" id="date_start" name='date_start' required>
                                         </div>
-                                    </div> 
+                                    </div>  -->
                                     <!--   <div class="form-group">
                                         <label for="description" class="col-md-2 control-label">Development <br> Man Hours *</label>
                                         <div class="col-md-9">
@@ -136,11 +136,11 @@
                                     <div class="form-group">
                                         <label for="description" class="col-md-2 control-label">Description: </label>
                                         <div class="col-md-9">
-                                            <input type='text' class="form-control" data-allow-clear='True' name='description' id='description' value='<?php echo !empty($data)?htmlspecialchars($data['description']):''; ?>' required>
+                                            <input type='text' class="form-control" data-allow-clear='True' name='description' placeholder='Description' id='description' value='<?php echo !empty($data)?htmlspecialchars($data['description']):''; ?>' required>
                                         </div>
                                     </div>
                                     
-                                    <div class='form-group'>
+<!--                                     <div class='form-group'>
                                         <label for="status" class="col-sm-2 control-label">Status: </label>
                                         <div class='col-sm-9'>
                                             <select class='form-control cbo' name='status' data-placeholder="Select Status" <?php echo !(empty($data))?"data-selected='".$data['status_name']."'":NULL ?> required
@@ -163,21 +163,11 @@
                                                
                                            > </select>
                                         </div>
-                                    </div> 
+                                    </div>  -->
                                     <div class='form-group'>
-                                    <label for='manager' class='col-sm-2 control-label'>Manager: </label>
+                                    <label for='manager' class='col-sm-2 control-label'>Project Manager: </label>
                                         <div class='col-sm-9'>
-                                           <select class='form-control cbo' name='manager'  data-placeholder='Select Manager' <?php echo !(empty($data))?"data-selected='".$project_manager_selected['employee_id']."'":NULL ?> required
-
-                                                <?php
-                                            if (empty($_GET['id'])) { 
-                                                echo "disabled>";
-                                                echo "<option value='".$employee_id."' selected>".$manager_name['employee_name']."</option>" ;  
-                                            } ?>
-                                         
-                                            
-                                               
-                                         > </select>
+                                             <input type='text' class="form-control" name='manager' value="<?php echo $manager_name['employee_name']; ?>" readonly>
                                        </div>
                                     
                                     
@@ -227,7 +217,7 @@
                                     <div class='form-group'>
                                     <label for='team_lead' class='col-sm-2 control-label'>Team Leader (BA): </label>
                                         <div class='col-sm-9'>
-                                            <select class='form-control cbo' name='team_lead_ba' data-allow-clear='True' data-placeholder='Select Team Lead (BA)'  <?php echo !(empty($data))?"data-selected='".$project_team_lead_ba['employee_id']."'":NULL ?> required>
+                                            <select class='form-control cbo' name='team_lead_ba' data-allow-clear='True' data-placeholder='Select Team Lead (Business Analyst)'  <?php echo !(empty($data))?"data-selected='".$project_team_lead_ba['employee_id']."'":NULL ?> required>
                                                <?php echo makeOptions($ba); ?>   
                                           </select>
                                         </div>
@@ -235,7 +225,7 @@
                                      <div class='form-group'>
                                     <label for='team_lead' class='col-sm-2 control-label'>Team Leader (Dev): </label>
                                         <div class='col-sm-9'>
-                                            <select class='form-control cbo' name='team_lead_dev' data-allow-clear='True' data-placeholder='Select Team Lead (DEV)'  <?php echo !(empty($data))?"data-selected='".$project_team_lead_dev['employee_id']."'":NULL ?> required>
+                                            <select class='form-control cbo' name='team_lead_dev' data-allow-clear='True' data-placeholder='Select Team Lead (Developer)'  <?php echo !(empty($data))?"data-selected='".$project_team_lead_dev['employee_id']."'":NULL ?> required>
                                                <?php echo makeOptions($dev); ?>   
                                           </select>
                                         </div>

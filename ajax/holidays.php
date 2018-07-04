@@ -17,12 +17,12 @@ $columns = array(
         }
         return htmlspecialchars($date_from);
     }),
-    array( 'db' => 'holiday_day','dt' => ++$index ,'formatter'=>function ($d, $row) {
-        return htmlspecialchars($d);
-    }),
-    array( 'db' => 'holiday_category','dt' => ++$index ,'formatter'=>function ($d, $row) {
-        return htmlspecialchars($d);
-    }),
+    // array( 'db' => 'holiday_day','dt' => ++$index ,'formatter'=>function ($d, $row) {
+    //     return htmlspecialchars($d);
+    // }),
+    // array( 'db' => 'holiday_category','dt' => ++$index ,'formatter'=>function ($d, $row) {
+    //     return htmlspecialchars($d);
+    // }),
     // array( 'db' => 'paygroup','dt' => ++$index ,'formatter'=>function ($d, $row) {
     //     return htmlspecialchars($d);
     // }),

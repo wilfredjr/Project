@@ -141,14 +141,11 @@ function jp_bind($bindings)
 $whereAll.=$filter_sql;
 $where.= "WHERE ".$whereAll;
 
-$join_query=" INNER JOIN employees e ON e.id=pr.requested_employee_id 
-INNER JOIN departments d ON d.id=e.department_id 
-INNER JOIN job_title jt ON jt.id=e.job_title_id 
-INNER JOIN request_status rs ON rs.id=pr.status_id
-LEFT JOIN project_designation pd ON pr.designation_id=pd.id";
+$join_query="INNER JOIN request_status rs ON rs.id=pr.status_id
+JOIN project_designation pd ON pr.designation_id=pd.id";
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT pr.id, pr.project_id,pr.reason, pr.modification_type as mod_type, pr.requested_employee_id, pr.date_filed as date_filed, pr.status_id as status_id, pr.is_deleted,pr.first_approver_date,pr.second_approver_date,pr.third_approver_date, e.code as emp_code, e.department_id, e.job_title_id, CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) as name, d.name as department, jt.description as job_des, rs.name as request_name,pd.name as designation FROM project_requests pr {$join_query} {$where} {$order} {$limit}";
+$complete_query="SELECT pr.id, pr.project_id,pr.reason, pr.modification_type as mod_type, pr.requested_employee_id, pr.date_filed as date_filed, pr.status_id as status_id, pr.is_deleted,pr.first_approver_date,pr.second_approver_date,pr.third_approver_date,(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pr.requested_employee_id) as name,rs.name as request_name,pd.name as designation FROM project_requests pr {$join_query} {$where} {$order} {$limit}";
 
 $data=$con->myQuery($complete_query, $bindings)->fetchAll();
 

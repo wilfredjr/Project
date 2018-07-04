@@ -18,7 +18,7 @@
 
 	if(!empty($_GET['id']))
     {
-  		$data=$con->myQuery("SELECT id,name,cur_phase,project_status_id,manager_id FROM projects WHERE id=? LIMIT 1",array($_GET['id']))->fetch(PDO::FETCH_ASSOC);
+  		$data=$con->myQuery("SELECT id,name,cur_phase,project_status_id,manager_id,employee_id,team_lead_ba,team_lead_dev FROM projects WHERE id=? LIMIT 1",array($_GET['id']))->fetch(PDO::FETCH_ASSOC);
   		if(empty($data) OR ($data['project_status_id']==2))
         {
   			Modal("Invalid Record Selected");
@@ -28,12 +28,20 @@
 	}
     $emp_id=$_SESSION[WEBAPP]['user']['employee_id'];
     $cur_phase=$con->myQuery("SELECT phase_name FROM project_phases WHERE id=?",array($data['cur_phase']))->fetch(PDO::FETCH_ASSOC);
+    $dev_phase=$con->myQuery("SELECT id FROM project_phase_dates WHERE project_id=? AND project_phase_id='3'",array($data['id']))->fetch(PDO::FETCH_ASSOC);
     $project_status=$con->myQuery("SELECT status_name FROM project_status WHERE id=?",array($data['project_status_id']))->fetch(PDO::FETCH_ASSOC);
     $emp_des=$con->myQuery("SELECT designation_id FROM projects_employees WHERE project_id=? AND employee_id=?",array($data['id'],$emp_id))->fetch(PDO::FETCH_ASSOC);
     if(($emp_des['designation_id']==3) OR ($emp_des['designation_id']==0)){
-      $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id>=?",array($data['cur_phase']))->fetchAll(PDO::FETCH_ASSOC);
+          if(empty($dev_phase)){
+        $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id<='2' AND designation_id='2'")->fetchAll(PDO::FETCH_ASSOC);
+      }else{
+      $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id>=?",array($data['cur_phase']))->fetchAll(PDO::FETCH_ASSOC);}
     }else{
-    $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id>=? AND designation_id=?",array($data['cur_phase'],$emp_des['designation_id']))->fetchAll(PDO::FETCH_ASSOC);}
+      if(empty($dev_phase)){
+        $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id<='2' AND designation_id=?",array($emp_des['designation_id']))->fetchAll(PDO::FETCH_ASSOC);
+      }else{
+        $phases=$con->myQuery("SELECT id,phase_name FROM project_phases WHERE id>=? AND designation_id=?",array($data['cur_phase'],$emp_des['designation_id']))->fetchAll(PDO::FETCH_ASSOC);}
+    }
     $project_employee=$con->myQuery("SELECT employee_id,CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name)  FROM projects_employees JOIN employees e ON e.id=employee_id WHERE project_id=".$_GET['id'])->fetchAll(PDO::FETCH_ASSOC);
 	makeHead("Application for Task Form");
 ?>
@@ -69,6 +77,7 @@
                                 <form class='form-horizontal disable-submit' action='save_task_management.php' method="POST">
                                     <input type='hidden' name='get_id' value='<?php echo !empty($get_id)?$get_id:''; ?>'> 
                                     <input type='hidden' name='id' value='<?php echo !empty($data)?$data['id']:''; ?>'>
+                                    <input type='hidden' name='admin_id' value='<?php echo !empty($data)?$data['employee_id']:''; ?>'>
                                     <input type='hidden' name='manager_id' value='<?php echo !empty($data)?$data['manager_id']:''; ?>'>
                                    <div class='form-group'>
                                       <label for="ot_date" class="col-sm-2 control-label">Project Phase: </label>

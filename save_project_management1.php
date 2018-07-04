@@ -18,7 +18,6 @@
 		$required_fieds=array(
 	//		"leave_id"=>"Select Type of Leave. <br/>",
 			"proj_name"=>"Enter Project Name. <br/>",
-			"date_start"=>"Enter Start Date. <br/>",
 			"description"=>"Enter Description. <br/>",
 			"team_lead_ba"=>"Select Team Leader (BA). <br/>",
 			"team_lead_dev"=>"Select Team Leader (Dev). <br/>"
@@ -41,7 +40,7 @@
 		}
 		else
 		{
-            $phase1 = new DateTime($inputs['date_start']);
+            $phase1 = new DateTime();
 	        $t = $phase1->getTimestamp();
 			$addDay = 86400;
 			$t=$t-$addDay;

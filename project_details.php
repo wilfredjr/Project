@@ -54,6 +54,7 @@ if(!isLoggedIn()){
                                                 <tr>
                                                     <th class='text-center'>Employee Name</th>
                                                     <th class='text-center'>Designation</th>
+                                                    <th class='text-center'>Date Assigned</th>
                                                     <?php 
                                                     if(($manage['is_team_lead_ba']=='1')OR($manage['is_manager']=='1')OR($manage['is_team_lead_dev']=='1')){
                                                     ?>

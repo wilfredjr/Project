@@ -17,7 +17,7 @@ if ($a == "p")
 }
 
 if(!empty($_GET['id']) && !empty($_GET['request_type'])){
-	if(in_array($_GET['request_type'], array("leave","overtime","official_business","shift","adjustment","pre_overtime","offset","allowance","ot_adjustment","project_approval_emp","project_approval_phase","task_management_approval","task_completion_approval","project_application_approval","project_development_approval"))){
+	if(in_array($_GET['request_type'], array("leave","overtime","official_business","shift","adjustment","pre_overtime","offset","allowance","ot_adjustment","project_approval_emp","project_approval_phase","task_management_approval","task_completion_approval","project_application_approval","project_development_approval","bug_application_approval","bug_employee_approval","bug_phase_approval"))){
 		$messages=$con->myQuery("SELECT message,
 								(SELECT CONCAT(last_name,', ',first_name,' ',middle_name) FROM employees e WHERE e.id=sender_id) as sender,
 								(SELECT CONCAT(last_name,', ',first_name,' ',middle_name) FROM employees e WHERE e.id=receiver_id) as receiver,

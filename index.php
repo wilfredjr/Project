@@ -31,10 +31,9 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           	<div class="page-header text-center">
-				<h1><u>DASHBOARD</u></h1>
+				<h3><u>DASHBOARD</u></h3>
 	        </div>
         </section>
-<?php if($user['user_type_id']!=5){ ?>
         <!-- Main content -->
         <section class="content">
         <div class="text-center">
@@ -47,6 +46,7 @@
         	<?php
         		$attendance=$con->myQuery("SELECT id FROM attendance WHERE employees_id=? AND out_time='0000-00-00 00:00:00' LIMIT 1",array($_SESSION[WEBAPP]['user']['employee_id']))->fetch(PDO::FETCH_ASSOC);
         	?>
+            <?php if($user['user_type_id']!=5){ ?>
         	   <div class='panel panel-default'>
             <div class='panel-body ' >
                 <div class='box box-warning box-solid'>
@@ -75,168 +75,87 @@
                 </div>
             </div>
         </div>
-        
+<?php }else{ 
+                $bug_active=$con->myQuery("SELECT Count(id) as id FROM project_bug_list WHERE project_status_id=1")->fetch(PDO::FETCH_ASSOC);
+                $bug_delay=$con->myQuery("SELECT Count(id) as id FROM project_bug_list WHERE project_status_id=4")->fetch(PDO::FETCH_ASSOC);
+                $bug_tot=$con->myQuery("SELECT Count(id) as id FROM project_bug_list")->fetch(PDO::FETCH_ASSOC);
+                $bug_done=$con->myQuery("SELECT Count(id) as id FROM project_bug_list WHERE project_status_id=2")->fetch(PDO::FETCH_ASSOC);
+    ?>
 
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-primary">
+                    <div class="inner">
+                      <h3><?php echo $bug_tot['id'];?></h3>
+
+                      <p>Total Bugs</p>
+                    </div>
+                    <div class="icon">
+                      <i class="fa fa-gears"></i>
+                    </div>
+                    <a href="bug_list.php" class="small-box-footer">
+                      More info <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box" style="background-color:  #ffa500 !important; color:white;">
+                    <div class="inner">
+                      <h3><?php echo $bug_active['id'];?></h3>
+
+                      <p>Active Bugs</p>
+                    </div>
+                    <div class="icon">
+                      <i class="fa fa-cog"></i>
+                    </div>
+                    <a href="bug_list.php" class="small-box-footer">
+                      More info <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-red" >
+                    <div class="inner">
+                      <h3><?php echo $bug_delay['id'];?></h3>
+
+                      <p>Delayed Bugs</p>
+                    </div>
+                    <div class="icon">
+                      <i class="fa fa-exclamation-triangle"></i>
+                    </div>
+                    <a href="bug_list.php" class="small-box-footer">
+                      More info <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-xs-6">
+                  <!-- small box -->
+                  <div class="small-box bg-green" >
+                    <div class="inner">
+                      <h3><?php echo $bug_done['id'];?></h3>
+
+                      <p>Bugs Controlled</p>
+                    </div>
+                    <div class="icon">
+                      <i class="fa fa-check-square"></i>
+                    </div>
+                    <a href="bug_list.php" class="small-box-footer">
+                      More info <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                  </div>
+                </div>
+
+
+
+<?php } ?>
         </section><!-- /.content -->
   </div>
 
-<?php
-}
-   	$todaybdays=$con->myQuery("SELECT DATE_FORMAT(birthday,'%M %d') AS dob, CONCAT(e.last_name, ', ', e.first_name) As employee_name FROM employees e WHERE is_deleted=0 and is_terminated=0 and ( MONTH(birthday) = MONTH(CURDATE()) and DAY(birthday) = DAY(CURDATE()) )")->fetchAll(PDO::FETCH_ASSOC);
 
-   	$upcomingbdays=$con->myQuery("SELECT DATE_FORMAT(birthday,'%M %d') AS dob, CONCAT(e.last_name, ', ', e.first_name) As employee_name FROM employees e WHERE is_deleted=0 and is_terminated=0 and WEEK(birthday) BETWEEN WEEK(CURDATE()) and WEEK( DATE_ADD(CURDATE(), INTERVAL +7 DAY) ) Order by dob")->fetchAll(PDO::FETCH_ASSOC);
-
-    $leave=$data=$con->myQuery("SELECT 
-    leave_id,
-    balance_per_year,
-    total_leave
-    
-    
-    FROM employees_available_leaves
-    
-    WHERE is_cancelled=0 AND is_deleted=0 AND employee_id=?",array($_SESSION[WEBAPP]['user']['employee_id']));
-?>
-
-<div class="modal fade" id="birthdayModal" tabindex="-1" role="dialog" aria-labelledby="birthdayModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form method="POST" action=''>
-        <div class="modal-header">
-          	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          	<h4 class="modal-title">Birthday Celebrants</h4>
-        </div>
-        <div class="modal-body" >
-        	<div class='form-group'>
-          		<label>Today's Birthday Celebrant</label> <br/>
-          		<table class="table table-condensed">
-          			<tbody> 
-		          	<?php 
-			          	if(!empty($todaybdays)):
-			          		foreach ($todaybdays as $todaybday):
-			        ?>
-          				<tr >
-		          			<?php
-			          			foreach ($todaybday as $key => $value):
-			        		?>
-		          				<td >
-			                    	<?php echo htmlspecialchars($value); ?>
-			                   	</td>
-				    		<?php
-				                endforeach;
-				    		?>
-		                </tr>
-		    		<?php
-	                		endforeach;
-                		else:                                            
-                    		echo ("No Results");
-                		endif;
-            		?>
-            		</tbody>
-            	</table>                     
-          	</div>
-
-          	<div class='form-group'>
-          		<label>Upcoming Birthday Celebrants</label> <br/>
-          		<table class="table table-condensed">
-          			<tbody> 
-          			<?php 
-          				if(!empty($upcomingbdays)):
-          					foreach ($upcomingbdays as $upcomingbday):
-          			?>
-          				<tr>
-          					<?php
-	          					foreach ($upcomingbday as $key => $value):
-	        				?>
-	          				<td >
-		                    	<?php echo htmlspecialchars($value); ?>
-		                   	</td>
-		    <?php
-		                endforeach;
-		    ?>
-		                </tr>
-		    <?php
-	                endforeach;
-                else:                                            
-                    echo ("No Results");
-                endif;
-            ?>
-            </tbody></table>
-          	</div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning" data-dismiss="modal">Okay</button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="LeaveModal" tabindex="-1" role="dialog" aria-labelledby="LeaveyModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-     
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Leave Entitlement</h4>
-        </div>
-        <div class="modal-body" >
-            <div class='form-group'>
-                <label>Available Leave</label> <br/>
-                <table class="table table-condensed">
-                    
-                                        
-                                            <tr>
-                                                <th class='text-center'></th>                    
-                                                <th class='text-center'>Remaining</th>
-                                                <th class='text-center'>Used</th>
-                                            </tr>
-                                            
-                                                
-                                               <?php //echo makeOptions($available_leave)
-                                               $ctr=0;
-                                                    while($row = $data->fetch(PDO::FETCH_ASSOC)):
-
-                                                        $ctr = $ctr +1;
-                                                        
-                                                          $leave_name=$con->myQuery("SELECT name FROM leaves WHERE id = ".$row['leave_id']);
-                             
-                                                            while($rows = $leave_name->fetch(PDO::FETCH_ASSOC)):
-
-                                                            echo "<tr><td>" .htmlspecialchars($rows['name']) ."</td>";
-                                                            endwhile;
-
-
-                                                            echo "<td class='text-center'>". htmlspecialchars($row['balance_per_year']). "</td>";
-                                                            echo "<td class='text-center'>". htmlspecialchars($row['total_leave'] - $row['balance_per_year']). "</td></tr>";
-                                                        
-
-
-                                                    endwhile;
-                                                    if ($ctr < 1) {
-                                                            
-                                                            echo "<tr><td></td>";
-
-                                                            echo "<td>0</td>";
-                                                            echo "<td>0</td></tr>";
-
-                                                        }
-
-                                                ?>
-                                        
-                </table>                     
-            </div>
-
-            
-
-        </div>
-
-
-    </div>
-  </div>
-</div>
 <script type="text/javascript">
     $(document).ready(function () {
         <?php

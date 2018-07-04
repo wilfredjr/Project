@@ -17,6 +17,15 @@ $columns = array(
     array( 'db' => 'hours','dt' => ++$index ,'formatter'=>function($d,$row){
           return htmlspecialchars($d);
     }),
+    array( 'db' => 'ui','dt' => ++$index ,'formatter'=>function($d,$row){
+          return htmlspecialchars($d);
+    }),
+    array( 'db' => 'dbase','dt' => ++$index ,'formatter'=>function($d,$row){
+          return htmlspecialchars($d);
+    }),
+    array( 'db' => 'coding','dt' => ++$index ,'formatter'=>function($d,$row){
+          return htmlspecialchars($d);
+    }),
     array( 'db' => 'comment','dt' => ++$index ,'formatter'=>function($d,$row){
           return nl2br($d);
     }),
@@ -38,7 +47,7 @@ $columns = array(
                 $action_buttons.="<button class='btn btn-sm btn-info' title='Query Request' onclick='query(\"{$row['id']}\")'><span  class='fa fa-question'></span></button> ";
             }else{
                   if(!empty($current['id'])){
-                    $action_buttons.="<a href='download_file.php?id={$current['id']}&type=c' class='btn btn-default'><span class='fa fa-download'></span></a><br>";
+                    $action_buttons.="<a href='download_file.php?id={$current['id']}&type=c' class='btn btn-default'><span class='fa fa-download'></span></a> ";
                   }
             $action_buttons.="<form method='post' action='move_approval.php' style='display: inline' onsubmit='return confirm(\"Approve This Request?\")'>";
             $action_buttons.="<input type='hidden' name='id' value={$row['id']}>";
@@ -72,7 +81,7 @@ $whereResult="";
 
 
  $query="SELECT pa.id,p.name,pa.type,pa.hours,pa.comment,pa.step_id,pa.phase_request_id,pa.phase_request_id,pa.employee_id,pa.date_filed,rs.name as request_name,
-(SELECT CONCAT(e.last_name,', ',e.first_name) FROM employees e WHERE e.id=pa.employee_id) AS employee_name
+(SELECT CONCAT(e.last_name,', ',e.first_name) FROM employees e WHERE e.id=pa.employee_id) AS employee_name,pa.ui,pa.dbase,pa.coding
 FROM project_development pa";
 $join=" JOIN request_status rs ON rs.id=pa.request_status_id JOIN projects p ON p.id=pa.project_id";
 $filter_sql="pa.request_status_id='1' AND (SELECT CASE   

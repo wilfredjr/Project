@@ -62,7 +62,10 @@ $columns = array(
                 $action_buttons.="<input type='hidden' name='type' value='task_submit'>";
                 $action_buttons.=" <button class='btn btn-sm btn-danger' value='phase' title='Cancel Request'><span class='fa fa-trash'></span></button></form>";
             }elseif($row['is_submitted']==0 AND $row['status_id']!=2){
+                $current1=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($row['project_id'],$row['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                if($current1['status_id']=='3'){}else{
             $action_buttons.="<button class='btn btn-sm btn-success' title='Task Completion Request' onclick='submit(\"{$row['id']}\")'><span  class='fa fa-check'></span></button> ";}
+            }
             return $action_buttons;
         })
     );
@@ -85,7 +88,7 @@ $whereResult="";
 // FROM projects p 
 // JOIN projects_employees pe ON pe.project_id=p.id JOIN project_status ps ON p.project_status_id=ps.id
 // WHERE pe.employee_id=? AND p.is_deleted=0",array($_SESSION[WEBAPP]['user']['employee_id']))->fetchAll(PDO::FETCH_ASSOC);
-$whereAll="ptl.employee_id=:employee_id AND p.is_deleted=0";
+$whereAll="ptl.employee_id=:employee_id";
     $filter_sql="";
     $filter_sql.=" ";
     $bindings[]=array('key'=>'employee_id','val'=>$_SESSION[WEBAPP]['user']['employee_id'],'type'=>0);

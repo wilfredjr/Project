@@ -16,9 +16,24 @@
                   <input type='file' name='file' class="filestyle" data-classButton=""  data-buttonName="btn btn-flat btn-default" data-input="true" data-classIcon="icon-plus" data-buttonText=" &nbsp;Select File" data-buttonBefore='true'>
                 </div>
             </div><br><br>
+            <div class="box box-warning">
+            <div class="box-body">
             <div class='form-group'>
             <label class='pull-left'>Development Man Hours:</label>
-              <input type='number' name='hours' id='hours' min='1' required="1" class='form-control'>
+              <input type='number' name='hours' id='hours' min='1' required="1" class='form-control' placeholder="Number of Development Man Hours">
+            </div>
+            <div class="text-center"><i>*Division of Hours* <br> *hours will be divided by the number of developers*</i></div>
+            <div class='form-group'>
+            <label class='pull-left'>UI:</label>
+              <input type='number' name='ui' id='ui' min='1' required="1" class='form-control col-md-1' placeholder="Hours in User Interface">
+            </div>
+            <div class='form-group'>
+            <label class='pull-left'>Database Design:</label>
+              <input type='number' name='database' id='database' min='1' required="1" class='form-control' placeholder="Hours in database design">
+            </div>
+            <div class='form-group'>
+            <label class='pull-left'>Coding:</label>
+              <input type='number' name='coding' id='coding' min='1' required="1" class='form-control' placeholder="Hours in coding">
             </div>
             <div class='form-group'>
             <label class='pull-left'>Comment:</label>
@@ -27,6 +42,8 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-warning">Submit</button>
+          </div>
+          </div>
           </div>
         </form>
       </div><!-- /.modal-content -->

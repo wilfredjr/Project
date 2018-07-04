@@ -34,7 +34,10 @@ $columns = array(
         return htmlspecialchars($d);
     }),
         array( 'db' => 'status_name','dt' => ++$index ,'formatter'=>function($d,$row){
-            $percent=($row['cur_phase']/8)*100;
+            if($row['project_status_id']=='2'){
+                $percent=100;
+            }else{
+            $percent=(($row['cur_phase']-1)/8)*100;}
             if($row['project_status_id']=='1'){
                 return "<div class='progress progress-sm progress-striped active'>
                       <div class='progress-bar progress-bar-info' style='width:".$percent."%;background-color: #ffa500 !important;'></div>
@@ -52,7 +55,10 @@ $columns = array(
                 }
     }),
         array( 'db' => 'status_name','dt' => ++$index ,'formatter'=>function($d,$row){
-            $percent=($row['cur_phase']/8)*100;
+            if($row['project_status_id']=='2'){
+                $percent=100;
+            }else{
+            $percent=(($row['cur_phase']-1)/8)*100;}
             if($row['project_status_id']=='1'){
                 return "<center><span class='badge' style='background-color: #ffa500 !important;'>".$percent."%</span></center>";
             }
@@ -166,18 +172,18 @@ function jp_bind($bindings)
 $whereAll.=$filter_sql;
 $where.= !empty($where) ? " AND ".$whereAll:"WHERE ".$whereAll;
 
-
+$order=" ORDER BY ps.order";
 $join_query="JOIN project_status ps ON p.project_status_id = ps.id JOIN project_phases pp ON p.cur_phase=pp.id";
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT ps.status_name,pp.phase_name, p.id as proj_id, p.project_status_id, p.name, p.description, p.department_id, p.employee_id,  DATE_FORMAT(p.start_date,'".DATE_FORMAT_SQL."') as start_date, DATE_FORMAT(p.date_filed,'".DATE_FORMAT_SQL."') as date_filed, DATE_FORMAT(p.end_date,'".DATE_FORMAT_SQL."') as end_date, p.is_deleted,cur_phase FROM projects p {$join_query} {$where} {$order} {$limit}";
+$complete_query="SELECT ps.status_name,ps.order,pp.phase_name, p.id as proj_id, p.project_status_id, p.name, p.description, p.department_id, p.employee_id,  DATE_FORMAT(p.start_date,'".DATE_FORMAT_SQL."') as start_date, DATE_FORMAT(p.date_filed,'".DATE_FORMAT_SQL."') as date_filed, DATE_FORMAT(p.end_date,'".DATE_FORMAT_SQL."') as end_date, p.is_deleted,cur_phase FROM projects p {$join_query} {$where} {$order} {$limit}";
             // echo $complete_query;
              //var_dump($bindings);
 
 $data=$con->myQuery($complete_query,$bindings)->fetchAll();
 $recordsFiltered=$con->myQuery("SELECT FOUND_ROWS();")->fetchColumn();
 
-$recordsTotal=$con->myQuery("SELECT COUNT(p.id) FROM `projects` p {$join_query} {$where} {$order} {$limit};",$bindings)->fetchColumn();
+$recordsTotal=$con->myQuery("SELECT COUNT(p.id) FROM `projects` p {$join_query} {$where}",$bindings)->fetchColumn();
 
 $json['draw']=isset ( $request['draw'] ) ?intval( $request['draw'] ) :0;
 $json['recordsTotal']=$recordsTotal;

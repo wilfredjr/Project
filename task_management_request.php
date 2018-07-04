@@ -85,7 +85,7 @@
                               <th class='text-center'>Employee Name</th>
                               <th class='text-center date-td'>Date Start</th>
                               <th class='text-center date-td'>Date End</th>
-                              <th class='text-center'>Manager</th>
+                              <th class='text-center'>Current Approver</th>
                               <th class='text-center' width="50%">Work to Do</th>
                               <th class='text-center'>Status</th>
                               <th class='text-center'>Reason</th>

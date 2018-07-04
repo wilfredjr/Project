@@ -8,6 +8,7 @@ if(!isLoggedIn()){
 
 if(!empty($_POST)){
 	$inputs=$_POST;
+
 	$employee_id=$_SESSION[WEBAPP]['user']['employee_id'];
 	$project_id=$inputs['proj_id'];
 	$manage=AccessForProject($project_id, $employee_id);
@@ -29,7 +30,11 @@ if(!empty($_POST)){
 	if(!empty($validate1)){
 		$errors.="<li>Phase Reversion has been submitted. Please cancel the request to proceed.</li>";
 	} 
-}else{
+	$validate_task=$con->myQuery("SELECT id FROM project_task_list WHERE project_id=? AND project_phase_id=? AND status_id!=2",array($inputs['proj_id'],$inputs['phase_id']))->fetchAll(PDO::FETCH_ASSOC);
+	if(!empty($validate_task)){
+		$errors.="<li>Active employee task/s. </li>";
+	}
+	}else{
 	$validate1=$con->myQuery("SELECT * FROM project_phase_request WHERE project_id=? AND project_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type='comp'",array($inputs['proj_id'],$inputs['phase_id']))->fetchAll(PDO::FETCH_ASSOC);
 	// var_dump($validate1);
 	// die;
@@ -91,7 +96,7 @@ if($errors!=""){
 					"status_id"=>'1',
 					"type"=>'rev',
 					"designation"=>$inputs['des_id'],
-					"hours"=>$inputs['hours'],
+					"hours"=>'',
 					"step"=>'2',
 					"admin_id"=>$inputs['admin_id'],
 					"reason"=>$inputs['reason']);

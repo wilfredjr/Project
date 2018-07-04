@@ -44,8 +44,10 @@ else{
 		  // $audit_details=$con->myQuery("SELECT employee_name,ot_date,orig_time_in,orig_time_out,adj_time_in,adj_time_out FROM vw_employees_ot_adjustments WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
         $current_employee=$_SESSION[WEBAPP]['user']['employee_id'];
                 $current=$con->myQuery("SELECT * FROM  project_phase_request WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
+                $date_filed1=$current['date_filed'];
                     $next_phase=$current['project_phase_id']+1;
                     $prev_phase=$current['project_phase_id'];
+                    $addDay = 86400;
                 $date = (new DateTime())->getTimestamp();
                 $date_now=date('Y-m-d',$date);
                 // $audit_message="From {$audit_details['orig_time_in']}-{$audit_details['orig_time_out']} to {$audit_details['adj_time_in']}-{$audit_details['adj_time_out']}.";
@@ -56,6 +58,7 @@ else{
                         $con->myQuery("UPDATE project_phase_request SET step_id = 3 WHERE id=?",array($inputs['id']));
                 }elseif($current['step_id']=='3'){
                     if($inputs['req_type']=='comp'){#manager comp
+
                         $def_check=$con->myQuery("SELECT * FROM project_phase_dates WHERE project_id=? AND project_phase_id=? AND (in_deficit='1' OR status_id='4')",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
                         $def_check_start=$con->myQuery("SELECT * FROM project_deficit WHERE project_id=? AND project_phase_id=? AND done_days='0' AND done_hours='0'",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
                         if(empty($def_check)){
@@ -76,7 +79,7 @@ else{
                                          $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=? AND status_id='3'",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                     }
                                 if($current['project_phase_id']=='8'){
-                                    $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                    $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                 }else{
                                     $con->myQuery("UPDATE projects SET project_status_id='1',cur_phase=? WHERE id=?",array($next_phase,$current['project_id']));
                                     }
@@ -88,15 +91,49 @@ else{
                                          $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=? AND status_id='3'",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                     }
                                 if($current['project_phase_id']=='8'){
-                                    $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                    $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                 }else{
                                     $con->myQuery("UPDATE projects SET project_status_id='1',cur_phase=? WHERE id=?",array($next_phase,$current['project_id']));
                                     }
                                 }
+                                                            $cur_phase=$con->myQuery("SELECT * FROM  project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $date_end1= new DateTime($current['date_filed']);
+                                                            $date_end_next=($date_end1->getTimestamp());
+                                                            do{
+                                                            $try=date('Y-m-d', ($date_end_next+$addDay));
+                                                                    $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                                                            $nextDay = date('w', ($date_end_next+$addDay));
+                                                            $date_end_next = $date_end_next+$addDay;}
+                                                            while($nextDay == 0 || $nextDay == 6 || !empty($holiday));
+                                                            $date_end_next=date('Y-m-d',$date_end_next);
+
+                                                            $date_now1= new DateTime($current['date_filed']);
+                                                            $date_start1= new DateTime($cur_phase['temp_date_start']);
+                                                            $interval = $date_now1->diff($date_start1);
+                                                            $days = $interval->days;
+                                                            $period = new DatePeriod($date_start1, new DateInterval('P1D'), $date_now1);
+                                                            foreach($period as $dt) {
+                                                            $curr = $dt->format('D');
+                                                            $holiday= $con->myQuery("SELECT holiday_date FROM holidays WHERE holiday_date=?",array($dt->format('Y-m-d')))->fetchAll(PDO::FETCH_ASSOC);
+                                                            // substract if Saturday or Sunday
+                                                            if ($curr == 'Sat' || $curr == 'Sun') {
+                                                                $days--;
+                                                                }
+                                                            // (optional) for the updated question
+                                                            elseif (!empty($holiday)) {
+                                                                $days--;
+                                                                }
+                                                            }
+                                                            if($days=='0'){$days='1';}else{$days=$days+1;}
+                                                            $count_def=$con->myQuery("SELECT SUM(done_days) as done_days FROM  project_deficit WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $sum=$days+$count_def['done_days'];
+                                                            $con->myQuery("UPDATE project_phase_dates SET a_days=? WHERE project_id=? AND project_phase_id=?",array($sum,$current['project_id'],$current['project_phase_id']));
+                                                            $con->myQuery("UPDATE project_phase_dates SET temp_date_start=? WHERE project_id=? AND project_phase_id=?",array($date_filed1,$current['project_id'],$current['project_phase_id']+1));
+
                         }else{
                             if(($def_check['status_id']=='4') && ($def_check['in_deficit']=='0')){
                                     $date_end1= new DateTime($def_check['date_end']);
-                                    $date_end_next=($date_end1->getTimestamp())+$addDay;
+                                    $date_end_next=($date_end1->getTimestamp());
                                     do{
                                     $try=date('Y-m-d', ($date_end_next+$addDay));
                                             $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
@@ -121,7 +158,7 @@ else{
                                         $days--;
                                         }
                                     }
-                                    if($days=='0'){$days='1';}
+                                    if($days=='0'){$days='1';}else{$days=$days+1;}
                                     $hours=$days*8;
                                     $con->myQuery("UPDATE project_phase_dates SET status_id='2',temp_date_end=? WHERE project_id=? AND project_phase_id=?",array($def_check['date_end'],$current['project_id'],$current['project_phase_id']));
                                     if($current['project_phase_id']=='2'){
@@ -132,6 +169,7 @@ else{
                                              $con->myQuery("INSERT INTO project_development (project_id,employee_id,team_lead_id,manager_id,admin_id,type,request_status_id,date_filed, phase_request_id) VALUES(?,?,?,?,?,'admin','1','$date_now',?)",array($current1['id'],$current1['employee_id'],$current1['team_lead_dev'],$current1['manager_id'],$current1['employee_id'],$current['id']));
 
                                              $con->myQuery("UPDATE projects SET project_status_id='1' WHERE id=?",array($current['project_id']));
+                                             $con->myQuery("INSERT INTO project_deficit (project_id,project_phase_id,date_start,date_end,in_hours,in_days,done_days,done_hours) VALUES(?,?,'$date_end_next',?,'$hours','$days','$days','$hours')",array($current['project_id'],$current['project_phase_id'],$current['date_filed']));
 
                                      }else{
                                     $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
@@ -140,7 +178,7 @@ else{
                                          $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                     }
                                     if($current['project_phase_id']=='8'){
-                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                         }else{
                                             $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
                                         }
@@ -153,16 +191,51 @@ else{
                                              $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                         }
                                         if($current['project_phase_id']=='8'){
-                                                $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                                $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                             }else{
                                                 $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
                                             }
                                         $con->myQuery("INSERT INTO project_deficit (project_id,project_phase_id,date_start,date_end,in_hours,in_days,done_days,done_hours) VALUES(?,?,'$date_end_next',?,'$hours','$days','$days','$hours')",array($current['project_id'],$current['project_phase_id'],$current['date_filed']));
                                     }
+                                        $cur_phase=$con->myQuery("SELECT * FROM  project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $date_end1= new DateTime($current['date_filed']);
+                                                            $date_end_next=($date_end1->getTimestamp());
+                                                            do{
+                                                            $try=date('Y-m-d', ($date_end_next+$addDay));
+                                                                    $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                                                            $nextDay = date('w', ($date_end_next+$addDay));
+                                                            $date_end_next = $date_end_next+$addDay;}
+                                                            while($nextDay == 0 || $nextDay == 6 || !empty($holiday));
+                                                            $date_end_next=date('Y-m-d',$date_end_next);
+
+                                                            $date_now1= new DateTime($cur_phase['date_end']);
+                                                            $date_start1= new DateTime($cur_phase['temp_date_start']);
+                                                            $interval = $date_now1->diff($date_start1);
+                                                            $days = $interval->days;
+                                                            $period = new DatePeriod($date_start1, new DateInterval('P1D'), $date_now1);
+                                                            foreach($period as $dt) {
+                                                            $curr = $dt->format('D');
+                                                            $holiday= $con->myQuery("SELECT holiday_date FROM holidays WHERE holiday_date=?",array($dt->format('Y-m-d')))->fetchAll(PDO::FETCH_ASSOC);
+                                                            // substract if Saturday or Sunday
+                                                            if ($curr == 'Sat' || $curr == 'Sun') {
+                                                                $days--;
+                                                                }
+                                                            // (optional) for the updated question
+                                                            elseif (!empty($holiday)) {
+                                                                $days--;
+                                                                }
+                                                            }
+                                                            if($days=='0'){$days='1';}else{$days=$days+1;}
+                                                            $count_def=$con->myQuery("SELECT SUM(done_days) as done_days FROM  project_deficit WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $sum=$days+$count_def['done_days'];
+                                                            $con->myQuery("UPDATE project_phase_dates SET a_days=? WHERE project_id=? AND project_phase_id=?",array($sum,$current['project_id'],$current['project_phase_id']));
+                                                            $con->myQuery("UPDATE project_phase_dates SET temp_date_start=? WHERE project_id=? AND project_phase_id=?",array($date_filed1,$current['project_id'],$current['project_phase_id']+1));
                                 
                                 }elseif(($def_check['status_id']=='4')&&($def_check['in_deficit']=='1')){
                                 $date_start1= new DateTime($def_check_start['date_start']);
                                 $date_now1= new DateTime($current['date_filed']);
+                                $date_now_check=(new DateTime($current['date_filed']))->getTimestamp();
+                                $date_end_check=(new DateTime($def_check['date_end']))->getTimestamp();
                                 // $date_now1->modify('+1 day');
                                 $interval = $date_now1->diff($date_start1);
                                 $days = $interval->days;
@@ -179,25 +252,79 @@ else{
                                     $days--;
                                     }
                                 }
-                                if($days=='0'){$days='1';}
+                                if($days=='0'){$days='1';}else{$days=$days+1;}
                                 $hours=$days*8;
+                                if($date_now_check<=$date_end_check){
+                                    $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0',temp_date_end=? WHERE project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
+                                }else{
+                                    $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']));
+                                }
+
+                                if($current['project_phase_id']=='2'){
+                                 $phase_check=$con->myQuery("SELECT id FROM  project_phase_dates WHERE project_id=? AND project_phase_id='3'",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+                                 if(empty($phase_check)){
+                                    $current1=$con->myQuery("SELECT * FROM  projects WHERE id=?",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+
+                                         $con->myQuery("INSERT INTO project_development (project_id,employee_id,team_lead_id,manager_id,admin_id,type,request_status_id,date_filed, phase_request_id) VALUES(?,?,?,?,?,'admin','1','$date_now',?)",array($current1['id'],$current1['employee_id'],$current1['team_lead_dev'],$current1['manager_id'],$current1['employee_id'],$current['id']));
+
+                                         $con->myQuery("UPDATE projects SET project_status_id='1' WHERE id=?",array($current['project_id']));
+                                         $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_end=? WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
+                                 }else{
                                 $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
-                                $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']));
+
                                 if($stat_check['status_id']=='3'){
                                     $con->myQuery("UPDATE project_phase_dates SET status_id='1' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase));
                                     $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                 }
                                 if($current['project_phase_id']=='8'){
-                                        $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                        $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                     }else{
                                         $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
                                     }
                                 $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_end=? WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
-                            }elseif(($def_check['status_id']=='1')&&($def_check['in_deficit']=='1')){
+                            }
+                            }else{
+                                $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
+
+                                if($stat_check['status_id']=='3'){
+                                    $con->myQuery("UPDATE project_phase_dates SET status_id='1' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase));
+                                    $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
+                                }
+                                if($current['project_phase_id']=='8'){
+                                        $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
+                                    }else{
+                                        $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
+                                    }
+                                $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_end=? WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
+                            }
+                                                            $cur_phase=$con->myQuery("SELECT * FROM  project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+
+                                                            $date_now1= new DateTime($cur_phase['temp_date_end']);
+                                                            $date_start1= new DateTime($cur_phase['temp_date_start']);
+                                                            $interval = $date_now1->diff($date_start1);
+                                                            $days = $interval->days;
+                                                            $period = new DatePeriod($date_start1, new DateInterval('P1D'), $date_now1);
+                                                            foreach($period as $dt) {
+                                                            $curr = $dt->format('D');
+                                                            $holiday= $con->myQuery("SELECT holiday_date FROM holidays WHERE holiday_date=?",array($dt->format('Y-m-d')))->fetchAll(PDO::FETCH_ASSOC);
+                                                            // substract if Saturday or Sunday
+                                                            if ($curr == 'Sat' || $curr == 'Sun') {
+                                                                $days--;
+                                                                }
+                                                            // (optional) for the updated question
+                                                            elseif (!empty($holiday)) {
+                                                                $days--;
+                                                                }
+                                                            }
+                                                            if($days=='0'){$days='1';}else{$days=$days+1;}
+                                                            $count_def=$con->myQuery("SELECT SUM(done_days) as done_days FROM  project_deficit WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $sum=$days+$count_def['done_days'];
+                                                            $con->myQuery("UPDATE project_phase_dates SET a_days=? WHERE project_id=? AND project_phase_id=?",array($sum,$current['project_id'],$current['project_phase_id']));
+                    }elseif(($def_check['status_id']=='1')&&($def_check['in_deficit']=='1')){
                                 $date_end_check=(new DateTime($def_check['date_end']))->getTimestamp();
-                                if($date_end_check<$date_now){
+                                $date_now1= new DateTime($current['date_filed']);
                                     $date_end1= new DateTime($def_check['date_end']);
-                                    $date_end_next=($date_end1->getTimestamp())+$addDay;
+                                    $date_end_next=($date_end1->getTimestamp());
                                     do{
                                     $try=date('Y-m-d', ($date_end_next+$addDay));
                                             $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
@@ -222,31 +349,70 @@ else{
                                         $days--;
                                         }
                                     }
-                                    if($days=='0'){$days='1';}
+                                    if($days=='0'){$days='1';}else{$days=$days+1;}
                                     $hours=$days*8;
-                                    $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0',temp_date_end=? WHERE project_id=? AND project_phase_id=?",array($def_check['date_end'],$current['project_id'],$current['project_phase_id']));
+                                    $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0',temp_date_end=? WHERE project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
+
+                                    if($current['project_phase_id']=='2'){
+                                     $phase_check=$con->myQuery("SELECT id FROM  project_phase_dates WHERE project_id=? AND project_phase_id='3'",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+                                     if(empty($phase_check)){
+                                        $current1=$con->myQuery("SELECT * FROM  projects WHERE id=?",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+
+                                             $con->myQuery("INSERT INTO project_development (project_id,employee_id,team_lead_id,manager_id,admin_id,type,request_status_id,date_filed, phase_request_id) VALUES(?,?,?,?,?,'admin','1','$date_now',?)",array($current1['id'],$current1['employee_id'],$current1['team_lead_dev'],$current1['manager_id'],$current1['employee_id'],$current['id']));
+
+                                             $con->myQuery("UPDATE projects SET project_status_id='1' WHERE id=?",array($current['project_id']));
+                                             $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_start=?,date_end='$date_applied' WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($date_end_next,$current['project_id'],$current['project_phase_id']));
+                                     }else{
                                     $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                     if($stat_check['status_id']){
                                         $con->myQuery("UPDATE project_phase_dates SET status_id='1' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase));
                                         $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
                                     }
                                         if($current['project_phase_id']=='8'){
-                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
+                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
                                         }else{
                                             $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
                                         }
                                     $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_start=?,date_end='$date_applied' WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($date_end_next,$current['project_id'],$current['project_phase_id']));
-                                }else{
-                                     if($current['project_phase_id']=='8'){
-                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8' WHERE id=?",array($current['project_id']));
-                                        }else{
-                                            $con->myQuery("UPDATE projects SET project_status_id='1',cur_phase=? WHERE id=?",array($next_phase,$current['project_id']));
                                         }
-                                     $con->myQuery("UPDATE project_phase_dates SET status_id='2',in_deficit='0',temp_date_end=? WHERE project_id=? AND project_phase_id=?",array($current['date_filed'],$current['project_id'],$current['project_phase_id']));
-                                      $con->myQuery("UPDATE project_deficit SET date_end=? WHERE project_id=? AND project_phase_id=?",array($current['date_filed'],$inputs['proj_id'],$inputs['phase_id']));
-                                }
-                            }
+                                    }else{
+                                    $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
+                                    if($stat_check['status_id']){
+                                        $con->myQuery("UPDATE project_phase_dates SET status_id='1' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase));
+                                        $stat_check=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$next_phase))->fetch(PDO::FETCH_ASSOC);
+                                    }
+                                        if($current['project_phase_id']=='8'){
+                                            $con->myQuery("UPDATE projects SET project_status_id='2',cur_phase='8',a_end_date=? WHERE id=?",array($current['date_filed'],$current['project_id']));
+                                        }else{
+                                            $con->myQuery("UPDATE projects SET project_status_id=?,cur_phase=? WHERE id=?",array($stat_check['status_id'],$next_phase,$current['project_id']));
+                                        }
+                                    $con->myQuery("UPDATE project_deficit SET done_days='$days',done_hours='$hours',date_start=?,date_end='$date_applied' WHERE done_days='0' AND done_hours='0' AND project_id=? AND project_phase_id=?",array($date_end_next,$current['project_id'],$current['project_phase_id']));
                         }
+                                                            $cur_phase=$con->myQuery("SELECT * FROM  project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+
+                                                            $date_now1= new DateTime($cur_phase['temp_date_end']);
+                                                            $date_start1= new DateTime($cur_phase['temp_date_start']);
+                                                            $interval = $date_now1->diff($date_start1);
+                                                            $days = $interval->days;
+                                                            $period = new DatePeriod($date_start1, new DateInterval('P1D'), $date_now1);
+                                                            foreach($period as $dt) {
+                                                            $curr = $dt->format('D');
+                                                            $holiday= $con->myQuery("SELECT holiday_date FROM holidays WHERE holiday_date=?",array($dt->format('Y-m-d')))->fetchAll(PDO::FETCH_ASSOC);
+                                                            // substract if Saturday or Sunday
+                                                            if ($curr == 'Sat' || $curr == 'Sun') {
+                                                                $days--;
+                                                                }
+                                                            // (optional) for the updated question
+                                                            elseif (!empty($holiday)) {
+                                                                $days--;
+                                                                }
+                                                            }
+                                                            if($days=='0'){$days='1';}else{$days=$days+1;}
+                                                            $count_def=$con->myQuery("SELECT SUM(done_days) as done_days FROM  project_deficit WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
+                                                            $sum=$days+$count_def['done_days'];
+                                                            $con->myQuery("UPDATE project_phase_dates SET a_days=? WHERE project_id=? AND project_phase_id=?",array($sum,$current['project_id'],$current['project_phase_id']));
+                        }
+                    }
                 }else{#rev
                             $hours=$current['hours'];
                             $days=($hours/8);
@@ -260,7 +426,7 @@ else{
                             $prev_date_end=(new DateTime($date_end['date_end']))->getTimestamp();;
                             $date_now1=(new DateTime($date_now))->getTimestamp();
 
-                        if(($prev_temp_date_end<=$prev_date_end)&&($prev_temp_date_end<$date_now1)){
+                        if(($prev_temp_date_end<=$prev_date_end)){
                         $con->myQuery("UPDATE project_phase_dates SET status_id='1',in_deficit='1' WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$prev_phase));
                         $con->myQuery("UPDATE projects SET cur_phase=? WHERE id=?",array($prev_phase,$current['project_id']));
                       }else{

@@ -38,7 +38,7 @@
 			die;
 		}
 
-		if(!in_array($_POST['request_type'], array("overtime","pre_overtime","leave","official_business","shift","adjustment","allowance","offset","ot_adjustment","project_approval_emp","project_approval_phase","task_management_approval","task_completion_approval","task_completion_submit","project_application_approval","project_development_approval"))){
+		if(!in_array($_POST['request_type'], array("overtime","pre_overtime","leave","official_business","shift","adjustment","allowance","offset","ot_adjustment","project_approval_emp","project_approval_phase","task_management_approval","task_completion_approval","task_completion_submit","project_application_approval","project_development_approval","bug_application_approval","bug_employee_approval","bug_phase_approval"))){
 			Modal("Invalid Record Selected");
 			redirect("index.php");
 			die;
@@ -217,6 +217,40 @@
 
 				//$page="adjustments_approval.php";
 				$type="Project Application Approval";
+				break;
+			case 'bug_application_approval':
+				$table="project_bug_application";
+				$current=$con->myQuery("SELECT employee_id as employees_id,request_status_id FROM  {$table} WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				#$audit_details=$con->myQuery("SELECT employees_name FROM vw_employees_offset WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				 #$audit_message="$_SESSION[WEBAPP]['user']['employee_id'] Commented on {$audit_details['employee_name']}'s Offset Request";
+
+				//$page="adjustments_approval.php";
+				$type="Bug Application Approval";
+				break;
+			case 'bug_employee_approval':
+				$table="project_bug_employee";
+				$current=$con->myQuery("SELECT requested_by as employees_id,request_status_id FROM  {$table} WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				#$audit_details=$con->myQuery("SELECT employees_name FROM vw_employees_offset WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				 #$audit_message="$_SESSION[WEBAPP]['user']['employee_id'] Commented on {$audit_details['employee_name']}'s Offset Request";
+
+				//$page="adjustments_approval.php";
+				$type="Bug Employee Approval";
+				break;
+
+			case 'bug_phase_approval':
+				$table="project_bug_request";
+				$current=$con->myQuery("SELECT employee_id as employees_id,request_status_id FROM  {$table} WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				#$audit_details=$con->myQuery("SELECT employees_name FROM vw_employees_offset WHERE id=?",array($inputs['request_id']))->fetch(PDO::FETCH_ASSOC);
+
+				 #$audit_message="$_SESSION[WEBAPP]['user']['employee_id'] Commented on {$audit_details['employee_name']}'s Offset Request";
+
+				//$page="adjustments_approval.php";
+				$type="Bug Phase Approval";
 				break;
 		}
 		foreach ($required_fieds as $key => $value) {

@@ -5,7 +5,7 @@ if (!isLoggedIn()) {
     die();
 }
 
-if (!AllowUser(array(1,4))) {
+if (!AllowUser(array(4))) {
     redirect("index.php");
 }
 
@@ -39,12 +39,13 @@ if (!AllowUser(array(1,4))) {
                 <div class='row'>
                     <div class='col-sm-12'>
                         <form method='get' class='form-horizontal' id='frm_search'>
+                          <br>
                             <div class='form-group'>
-                              <label class='col-md-3 text-right' >Start Date </label>
+                              <label class='col-md-2 text-right' >Start Date </label>
                               <div class='col-md-3'>
                                 <input type='text' name='date_start' class='form-control date_picker' id='date_start' value='<?php echo !empty($_GET['date_start'])?htmlspecialchars($_GET['date_start']):''?>'>
                               </div>
-                              <label class='col-md-3 text-right' >End Date </label>
+                              <label class='col-md-2 text-right' >End Date </label>
                               <div class='col-md-3'>
                                 <input type='text' name='date_end' class='form-control date_picker' id='date_end' value='<?php echo !empty($_GET['date_end'])?htmlspecialchars($_GET['date_end']):''?>'>
                               </div>
@@ -55,7 +56,7 @@ if (!AllowUser(array(1,4))) {
                                     <select class='form-control cbo-paygroup-id' name='pay_group_id'  style='width:100%' data-allow-clear='true'>
                                     </select>
                                 </div> -->
-                                <label class='col-md-3 text-right' >Category</label>
+                      <!--           <label class='col-md-3 text-right' >Category</label>
                                 <div class='col-md-3'>
                                     <select class='cbo form-control cbo' name='category' data-placeholder='Filter By Category' style='width:100%' data-allow-clear='true'>
                                         <option value=""></option>
@@ -63,10 +64,9 @@ if (!AllowUser(array(1,4))) {
                                         <option value="Special Holiday">Special Holiday</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class='form-group'>
                                 <div class='col-md-2 col-md-offset-5 text-right'>
-                                <br><br>
                                     <button type='button'  class=' btn btn-warning' onclick='filter_search()'><span class="fa fa-search"></span> Filter</button>
                                     <button type='button'  class=' btn btn-default' onclick='form_clear("frm_search")'> Clear</button>
                                 </div>
@@ -85,8 +85,8 @@ if (!AllowUser(array(1,4))) {
                           <tr>
                             <th class='text-center'>Name</th>
                             <th class='text-center'>Date</th>
-                            <th class='text-center'>Day</th>
-                            <th class='text-center'>Category</th>
+<!--                             <th class='text-center'>Day</th>
+                            <th class='text-center'>Category</th> -->
 <!--                             <th class='text-center'>Pay Group</th> -->
                             <th class='text-center' style="max-width: 50px">Action</th>
                           </tr>

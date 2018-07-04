@@ -11,7 +11,7 @@
         redirect("index.php");
         die;
     } else {
-        if (!in_array($_POST['type'], array('pre_overtime','overtime','official_business','adjustment','leave','shift','offset','allowance','ot_approval','ot_adjustment','project_approval_emp','project_approval_phase','task_management_approval','task_completion_approval','project_application_approval'))) {
+        if (!in_array($_POST['type'], array('pre_overtime','overtime','official_business','adjustment','leave','shift','offset','allowance','ot_approval','ot_adjustment','project_approval_emp','project_approval_phase','task_management_approval','task_completion_approval','project_application_approval','bug_application_approval'))) {
             Modal("Invalid Record Selected");
             redirect("index.php");
             die;
@@ -522,10 +522,10 @@
                 $filter_sql.=$ltype;
                 $record_filters['approve_project_name']=$_POST['approve_project_name'];
             }
-             if(!empty($_POST['approve_status']))
+               if(!empty($_POST['approve_request_id1']))
              {
 
-                  $dep=" request_status_id=:approve_status ";
+                  $dep=" employee_id=:approve_request_id1 ";
                   if(!empty($filter_sql))
                 {
 
@@ -533,7 +533,7 @@
 
                    
                   }
-                 $record_filters['approve_status']=$_POST['approve_status'];
+                 $record_filters['approve_request_id1']=$_POST['approve_request_id1'];
                 $filter_sql.=$dep;
              }
                if (!empty($_POST['approve_employee_id'])) 
@@ -597,10 +597,10 @@
                 $filter_sql.=$ltype;
                 $record_filters['approve_project_name']=$_POST['approve_project_name'];
             }
-             if(!empty($_POST['approve_status']))
+             if(!empty($_POST['approve_request_id1']))
              {
 
-                  $dep=" request_status_id=:approve_status ";
+                  $dep=" employee_id=:approve_request_id1 ";
                   if(!empty($filter_sql))
                 {
 
@@ -608,7 +608,76 @@
 
                    
                   }
-                 $record_filters['approve_status']=$_POST['approve_status'];
+                 $record_filters['approve_request_id1']=$_POST['approve_request_id1'];
+                $filter_sql.=$dep;
+             }
+             if (!empty($_POST['approve_start_date'])) {
+                $date_start_file=date_create($_POST['approve_start_date']);
+            } else {
+                $date_start_file = "";
+            }
+            if (!empty($_POST['approve_end_date'])) {
+                $date_end_file = date_create($_POST['approve_end_date']);
+            } else {
+                $date_end_file = "";
+            }
+
+            if (!empty($date_start_file)) {
+                $filter_sql.=!empty($filter_sql)?" AND ":"";
+                $filter_sql.=" date_filed >= :date_start ";
+                $record_filters['date_start'] = date_format($date_start_file,'Y-m-d');
+            }
+
+            if (!empty($date_end_file)) {
+                $filter_sql.=!empty($filter_sql)?" AND ":"";
+                $filter_sql.=" date_filed <= :date_end ";
+                $record_filters['date_end'] = date_format($date_end_file,'Y-m-d');
+            }           
+            $query.=!empty($filter_sql)?" WHERE ".$filter_sql:"";
+            // var_dump($query);
+            // echo "<br>";
+            // var_dump($record_filters);
+
+            $records = $con->myQuery($query, $record_filters)->fetchAll(PDO::FETCH_ASSOC);
+            // var_dump($records);
+            // die();
+            break;
+
+            case 'bug_application_approval':
+            
+            // var_dump($_POST);
+            // die;
+            $employee=$_SESSION[WEBAPP]['user']['employee_id'];
+            $page="bug_application_approval.php";
+            $query="SELECT
+                    id, employee_id, request_status_id
+                FROM project_bug_application";
+            $filter_sql="request_status_id=1 AND employee_id=:employee_id1";
+
+            $record_filters['employee_id1']=$_SESSION[WEBAPP]['user']['employee_id'];
+
+            if(!empty($_POST['approve_project_name']))
+            {
+                $ltype=" project_id=:approve_project_name ";
+                if(!empty($filter_sql))
+                {
+                    $filter_sql.=" AND ";
+                }
+                $filter_sql.=$ltype;
+                $record_filters['approve_project_name']=$_POST['approve_project_name'];
+            }
+                if(!empty($_POST['approve_request_id1']))
+             {
+
+                  $dep=" employee_id=:approve_request_id1 ";
+                  if(!empty($filter_sql))
+                {
+
+                      $filter_sql.=" AND ";
+
+                   
+                  }
+                 $record_filters['approve_request_id1']=$_POST['approve_request_id1'];
                 $filter_sql.=$dep;
              }
              if (!empty($_POST['approve_start_date'])) {
@@ -1634,6 +1703,9 @@
                 $date = (new DateTime())->getTimestamp();
                 $date_now=date('Y-m-d',$date);
                 // $audit_message="From {$audit_details['orig_time_in']}-{$audit_details['orig_time_out']} to {$audit_details['adj_time_in']}-{$audit_details['adj_time_out']}.";
+                if($current['step_id']=='2'){
+                            $con->myQuery("UPDATE project_task SET step_id='3' WHERE id=?",array($inputs['id']));
+                }elseif($current['step_id']=='3'){
                     $phase_stat=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($current['project_id'],$current['project_phase_id']))->fetch(PDO::FETCH_ASSOC);
                     $params1=array(
                     "employee"=>$current['employee_id'],
@@ -1667,6 +1739,7 @@
                                 )",$params1);
                     $con->myQuery("UPDATE project_task SET request_status_id = 2, date_approved=? WHERE id=?",array($date_now,$inputs['id']));
                     }
+                }
                     break;
 
              #Task Completion Approval
@@ -1682,13 +1755,19 @@
                 $date = (new DateTime())->getTimestamp();
                 $date_now=date('Y-m-d',$date);
                 // $audit_message="From {$audit_details['orig_time_in']}-{$audit_details['orig_time_out']} to {$audit_details['adj_time_in']}-{$audit_details['adj_time_out']}.";
-                    $con->myQuery("UPDATE project_task_completion SET request_status_id = 2, date_approved=? WHERE id=?",array($date_now,$inputs['id']));
-                    $con->myQuery("UPDATE project_task_list SET status_id = 2, date_finished=?, work_done=? WHERE id=?",array($current['date_filed'],$current['worked_done'],$current['task_list_id']));
-                    $con->myQuery("UPDATE project_files SET is_approved = 1 WHERE task_completion_id=?",array($inputs['id']));
+                    if($current['step_id']=='1'){
+                            $con->myQuery("UPDATE project_task_completion SET step_id = 2 WHERE id=?",array($inputs['id']));
+                        }elseif($current['step_id']=='2'){
+                            $con->myQuery("UPDATE project_task_completion SET step_id = 3 WHERE id=?",array($inputs['id']));
+                        }elseif($current['step_id']=='3'){
+                        $con->myQuery("UPDATE project_task_completion SET request_status_id = 2, date_approved=? WHERE id=?",array($date_now,$inputs['id']));
+                        $con->myQuery("UPDATE project_task_list SET status_id = 2, date_finished=?, work_done=? WHERE id=?",array($current['date_filed'],$current['worked_done'],$current['task_list_id']));
+                        $con->myQuery("UPDATE project_files SET is_approved = 1 WHERE task_completion_id=?",array($inputs['id']));
+                        }
                     }
                     break;
 
-            #Task Completion Approval
+            #Project Application Approval
 
                 case 'project_application_approval':
                 // var_dump($inputs);
@@ -1706,6 +1785,123 @@
                     $con->myQuery("UPDATE project_files SET is_approved = 1 WHERE task_completion_id=?",array($inputs['id']));
                     }
                     break;
+
+             #Bug Application Approval
+
+                case 'bug_application_approval':
+                // var_dump($inputs);
+                die;
+                    foreach ($records as $inputs) {
+                        // $audit_details=$con->myQuery("SELECT employee_name,ot_date,time_from,time_to,worked_done,no_hours FROM vw_employees_ot WHERE id=?", array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
+                        $current=$con->myQuery("SELECT * FROM  project_bug_application WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
+                    $next_phase=$current['project_phase_id']+1;
+                    $prev_phase=$current['project_phase_id'];
+                $date = (new DateTime())->getTimestamp();
+                $date_now=date('Y-m-d',$date);
+                // $audit_message="From {$audit_details['orig_time_in']}-{$audit_details['orig_time_out']} to {$audit_details['adj_time_in']}-{$audit_details['adj_time_out']}.";
+                    $con->beginTransaction();   
+
+                            $current1=$con->myQuery("SELECT days FROM project_bug_rate WHERE id=?",array($current['bug_rate_id']))->fetch(PDO::FETCH_ASSOC);
+                            //unset($inputs['shifting_id']);
+                            $project_id = $current['project_id'];
+                            $manager = $current['manager_id'];
+                            $name=$current['name'];
+                            $bug_rate=$current['bug_rate_id'];
+                            $team_lead_ba=$current['team_lead_ba'];
+                            $team_lead_dev=$current['team_lead_dev'];
+                            $admin=$current['admin_id'];
+                            $date = new DateTime();
+                            $des = $current['description'];
+                            $date_start=$date->format("Y-m-d");
+                            $date_applied=date_format($date, 'Y-m-d');
+                            $bug_days=$current1['days']-1;
+                    // phase1 date
+                            $phase1 = new DateTime( $date_start );
+                        $t = $phase1->getTimestamp();
+                        $t=$t-86400;
+                            $addDay = 86400;
+                            do{
+                            $try=date('Y-m-d', ($t+$addDay));
+                                    $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                            $nextDay = date('w', ($t+$addDay));
+                            $t = $t+$addDay;}
+                            while($nextDay == 0 || $nextDay == 6 || !empty($holiday));
+                              $phase1_start=date('Y-m-d',$t);
+                          if($bug_days!=0){
+                                for($i=0; $i<$bug_days; $i++){
+                                $try=date('Y-m-d', ($t+$addDay));
+                                        $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                                $nextDay = date('w', ($t+$addDay));
+                                if($nextDay == 0 || $nextDay == 6 || !empty($holiday)) {
+                                    $i--;
+                                }
+                                $t = $t+$addDay;
+                                }
+                            $phase1_date=date('Y-m-d',$t);
+                        }else{
+                            $phase1_date=$phase1_start;
+                        }
+                        // var_dump($date_start);
+                        // die;
+                        $phase1=date('Y-m-d',$t);
+                    // phase2 date
+                        $phase1 = new DateTime( $phase1 );
+                        $t = $phase1->getTimestamp();
+                        $addDay = 86400;
+                        do{
+                            $try=date('Y-m-d', ($t+$addDay));
+                                    $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                            $nextDay = date('w', ($t+$addDay));
+                            $t = $t+$addDay;}
+                            while($nextDay == 0 || $nextDay == 6 || !empty($holiday));
+                              $phase2_start=date('Y-m-d',$t);
+                        for($i=0; $i<2; $i++){
+                            $addDay = 86400;
+                            $try=date('Y-m-d', ($t+$addDay));
+                                    $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                            $nextDay = date('w', ($t+$addDay));
+                            if($nextDay == 0 || $nextDay == 6 || !empty($holiday)) {
+                                $i--;
+                            }
+                            $t = $t+$addDay;
+                        }
+                        $phase2=date('Y-m-d',$t);
+                        // var_dump($phase2_start,$phase2);
+                        // die;
+                         $phase2_date=date('Y-m-d',$t);
+                    //phase 2 end
+
+                            $params=array(
+                                'project_id'=>$project_id,
+                                'employee_id'=>$_SESSION[WEBAPP]['user']['employee_id'],
+                                'name'=>$name,
+                                'bug_rate_id'=>$bug_rate,
+                                'date_start'=>$date_start,
+                                'date_end'=>$phase2,
+                                'description'=>$des,
+                                'date_applied'=>$date_applied,
+                                'proj_sta'=>"1",
+                                'manager'=>$manager,
+                                'team_lead_ba'=>$team_lead_ba,
+                                'team_lead_dev'=>$team_lead_dev,
+                                'cur_phase'=>"1",
+                                'admin'=>$admin
+                                );
+
+                            $con->myQuery("INSERT INTO project_bug_list (employee_id,project_id,name,bug_rate_id,description,project_status_id,date_filed,date_start,date_end,manager_id,team_lead_ba, team_lead_dev,bug_phase_id,admin_id) VALUES (:employee_id,:project_id,:name,:bug_rate_id,:description,:proj_sta,:date_start,:date_start,:date_end,:manager,:team_lead_ba,:team_lead_dev,:cur_phase,:admin)",$params);
+                            $bug_id = $con->lastInsertId();
+                            // var_dump($inputs['emp_id']);
+                            // die;
+                                $con->myQuery("INSERT INTO project_bug_phase_dates (project_id,bug_list_id,bug_phase_id,date_end,project_status_id,date_start) VALUES ('$project_id','$bug_id','1','$phase1_date','1','$phase1_start')");
+                                $con->myQuery("INSERT INTO project_bug_phase_dates (project_id,bug_list_id,bug_phase_id,date_end,project_status_id,date_start) VALUES ('$project_id','$bug_id','2','$phase2_date','3','$phase2_start')");
+
+                                 $con->myQuery("UPDATE project_bug_application SET request_status_id = 2, date_approved=? WHERE id=?",array($date_applied,$current['id']));
+                            // die;
+                            $con->commit(); 
+                    }
+                    break;
+
+
         #LEAVE
                 case 'leave':
                     foreach ($records as $inputs) {

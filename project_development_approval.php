@@ -85,6 +85,9 @@
                                                   <th class='text-center'>Project</th>
                                                   <th class='text-center'>Requested By</th>
                                                   <th class='text-center'>Hours</th>
+                                                  <th class='text-center'>UI</th>
+                                                  <th class='text-center'>Database Design</th>
+                                                  <th class='text-center'>Coding</th>
                                                   <th class='text-center'>Comment</th>
                                                   <th class='text-center'>Status</th>
                                                   <th class='text-center'>Action</th>

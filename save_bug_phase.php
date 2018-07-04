@@ -7,7 +7,7 @@ if(!isLoggedIn()){
 }
             if(empty($_FILES['file']['name'])){
             Alert("No file selected.","danger");
-            redirect("bugs_view.php?id=".urlencode($inputs['id']));
+            redirect("bugs_view.php?id=".urlencode($_POST['id']));
             die();
         }
 if(!empty($_POST)){
@@ -17,14 +17,28 @@ if(!empty($_POST)){
 	$errors="";
 	$inputs=array_map('trim', $inputs);
 			if($inputs['type']=='rev'){
-			$phase=$inputs['bug_phase_id']-1;
-		}else{
 			$phase=$inputs['bug_phase_id'];
+		}else{
+			$phase=$inputs['bug_phase_id']-1;
 		}
-	$validate=$con->myQuery("SELECT * FROM project_bug_request WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type=?",array($inputs['project_id'],$inputs['id'],$phase,$inputs['type']))->fetchAll(PDO::FETCH_ASSOC);
+	$validate=$con->myQuery("SELECT id FROM project_bug_request WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type=?",array($inputs['project_id'],$inputs['id'],$phase,$inputs['type']))->fetchAll(PDO::FETCH_ASSOC);
 	if(!empty($validate)){
 		$errors.="<li>Request has already been sent.</li>";
 		}
+
+		if($inputs['type']=='comp'){
+	$validate1=$con->myQuery("SELECT id FROM project_bug_request WHERE project_id=? AND bug_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type='rev'",array($inputs['project_id'],$phase))->fetchAll(PDO::FETCH_ASSOC);
+	if(!empty($validate1)){
+		$errors.="<li>Phase Reversion has been submitted. Please cancel the request to proceed.</li>";
+	} 
+	}else{
+		$validate1=$con->myQuery("SELECT id FROM project_bug_request WHERE project_id=? AND bug_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type='comp'",array($inputs['project_id'],$phase))->fetchAll(PDO::FETCH_ASSOC);
+		// var_dump($validate1);
+		// die;
+		if(!empty($validate1)){
+			$errors.="<li>Phase Completion has been submitted. Please cancel the request to proceed.</li>";
+		}
+	}
 	// var_dump($errors);
 	// die;
 if($errors!=""){
@@ -267,6 +281,19 @@ if($errors!=""){
 				Alert("Project phase has been successfully updated.","success");
 			}else{ #Team Leader Start
 				$last_phase=$inputs['bug_phase_id']-1;
+				if($current['bug_phase_id']=='1'){
+					$team_lead=$current['team_lead_dev'];
+				}elseif($current['bug_phase_id']=='2'){
+					$team_lead=$current['team_lead_ba'];
+				}
+
+				if($team_lead==$employee_id){
+					$step_id='2';
+				}else{
+					$step_id='1';
+				}
+
+
 				 $con->beginTransaction();
 				if($inputs['type']=='comp'){
 				$param1=array(
@@ -278,7 +305,11 @@ if($errors!=""){
 				"manager_id"=>$current['manager_id'],
 				"status_id"=>'1',
 				"type"=>'comp',
-				"comment"=>$inputs['work_done']);
+				"comment"=>$inputs['work_done'],
+				'admin_id'=>$current['admin_id'],
+				'team_lead'=>$team_lead,
+				'step_id'=>$step_id
+				);
 				}else{
 					$param1=array(
 					"project_id"=>$current['project_id'],
@@ -286,12 +317,16 @@ if($errors!=""){
 					"bug_phase_id"=>$last_phase,
 					'start_date'=>$date_applied,
 					'employee_id'=>$_SESSION[WEBAPP]['user']['employee_id'],
-					"manager_id"=>$inputs['manager_id'],
+					"manager_id"=>$current['manager_id'],
 					"status_id"=>'1',
 					"type"=>'rev',
-					"comment"=>$inputs['reason']);
+					"comment"=>$inputs['work_done'],
+					'admin_id'=>$current['admin_id'],
+					'team_lead'=>$team_lead,
+					'step_id'=>$step_id
+				);
 				}
-				$con->myQuery("INSERT INTO project_bug_request (project_id,bug_list_id,bug_phase_id,employee_id,request_status_id,manager_id,date_filed,type,comment) VALUES (:project_id,:bug_list_id,:bug_phase_id,:employee_id,:status_id,:manager_id,:start_date,:type,:comment)",$param1);
+				$con->myQuery("INSERT INTO project_bug_request (project_id,bug_list_id,bug_phase_id,employee_id,request_status_id,manager_id,date_filed,type,comment,admin_id,team_lead_id, step_id) VALUES (:project_id,:bug_list_id,:bug_phase_id,:employee_id,:status_id,:manager_id,:start_date,:type,:comment,:admin_id,:team_lead,:step_id)",$param1);
 				$request_id = $con->lastInsertId();
 				$con->commit();
 					try {
@@ -314,21 +349,6 @@ if($errors!=""){
                       redirect("bugs_view.php?id=".urlencode($inputs['id']));
                       die;
                     }
-				if($inputs['type']=='comp'){
-					$validate1=$con->myQuery("SELECT * FROM project_bug_request WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type='rev'",array($current['project_id'],$current['id'],$last_phase))->fetchAll(PDO::FETCH_ASSOC);
-					if(!empty($validate1)){
-						$con->myQuery("UPDATE project_bug_request SET request_status_id='5', date_cancelled=? WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND type='rev'",array($date_applied,$current['project_id'],$current['id'],$last_phase));
-						$con->myQuery("UPDATE bug_files SET is_deleted='1' WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND bug_request_id=?",array($current['project_id'],$current['id'],$last_phase,$validate1['id']));
-					} 
-				}else{
-					$validate1=$con->myQuery("SELECT * FROM project_bug_request WHERE project_id=? AND bug_list_id=? AND project_phase_id=? AND (request_status_id='1' OR request_status_id='3') AND type='comp'",array($current['project_id'],$current['id'],$current['bug_phase_id']))->fetchAll(PDO::FETCH_ASSOC);
-					// var_dump($validate1);
-					// die;
-					if(!empty($validate1)){
-						$con->myQuery("UPDATE project_bug_request SET request_status_id='5', date_cancelled=? WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND type='comp'",array($date_applied,$current['project_id'],$current['id'],$current['bug_phase_id']));
-						$con->myQuery("UPDATE bug_files SET is_deleted='1' WHERE project_id=? AND bug_list_id=? AND bug_phase_id=? AND bug_request_id=?",array($current['project_id'],$current['id'],$current['bug_phase_id'],$validate1['id']));
-					}
-				}
 				Alert("Request has been sent.","success");
 			}
 			redirect("bugs_view.php?id=".urlencode($inputs['id']));

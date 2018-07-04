@@ -26,8 +26,11 @@
               <textarea name='reason' id='reason' required="" class='form-control' style='resize: none' rows='4'></textarea>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-warning">Submit</button>
+            <div class="modal-footer">
+             <div class='text-center'>
+            <button type="submit" class="btn btn-warning">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
           </div>
         </form>
       </div><!-- /.modal-content -->

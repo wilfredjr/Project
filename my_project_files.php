@@ -54,6 +54,7 @@
                       <thead>
                         <tr>
                            <th class='text-center'>Project Name</th>
+                           <th class='text-center'>Phase Name</th>
                           <th class='text-center'>File</th>
                           <th class='text-center'>Date Uploaded</th>
                           <th class='text-center'>Uploaded By</th>
@@ -64,13 +65,14 @@
                         <?php
                            foreach($results as $value) {
                               // your code
-                              $data=$con->myQuery("SELECT pf.id as id,file_name,date_modified,pf.employee_id,project_phase_id,(SELECT CONCAT(e.first_name,' ',e.last_name) FROM employees e WHERE e.id=pf.employee_id) AS uploader,p.name AS project_name
-                              FROM project_files pf JOIN projects p ON p.id=pf.project_id WHERE pf.is_deleted=0 AND pf.project_id=? ",array($value['project_id']))->fetchAll(PDO::FETCH_ASSOC);
+                              $data=$con->myQuery("SELECT pf.id as id,file_name,date_modified,pf.employee_id,project_phase_id,(SELECT CONCAT(e.last_name,', ',e.first_name,' ',e.middle_name) FROM employees e WHERE e.id=pf.employee_id) AS uploader,p.name AS project_name,pp.phase_name
+                              FROM project_files pf JOIN projects p ON p.id=pf.project_id JOIN project_phases pp ON pp.id=pf.project_phase_id WHERE pf.is_deleted=0 AND pf.project_id=? ",array($value['project_id']))->fetchAll(PDO::FETCH_ASSOC);
                         
                           foreach($data as $row):
                         ?>
                           <tr>
                             <td class='text-center'><?php echo htmlspecialchars($row['project_name'])?></td>
+                            <td class='text-center'><?php echo htmlspecialchars($row['phase_name'])?></td>
                             <td class='text-center'><?php echo htmlspecialchars($row['file_name'])?></td>
                             <td class='text-center'><?php echo htmlspecialchars($row['date_modified'])?></td>
                              <td class='text-center'><?php echo htmlspecialchars($row['uploader'])?></td>
@@ -101,7 +103,7 @@
 
 <script type="text/javascript">
   $(function () {
-        $('#ResultTable').DataTable(<?php if(AllowUser(array(1,4))):?>{
+        $('#ResultTable').DataTable(<?php if(AllowUser(array(1,2,3,4,5))):?>{
                dom: 'Bfrtip',
                     buttons: [
                         // {

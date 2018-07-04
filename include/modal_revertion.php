@@ -19,10 +19,10 @@
                     <label for="purpose" class="col-sm-3 control-label text-right">Upload File: <br/> <small>Upload Limit: <?php echo ini_get('upload_max_filesize')."B";?> </small></label>
             <input type='file' name='file' class="filestyle" data-classButton=""  data-buttonName="btn btn-flat btn-default" data-input="true" data-classIcon="icon-plus" data-buttonText=" &nbsp;Select File" data-buttonBefore='true' required>
             </div>
-            <div class='form-group'>
-            <label class='pull-left'>Hours of Extension:</label>
-              <input type='number' name='hours' id='hours' min='1' required="1" class='form-control'>
-            </div>
+<!--             <div class='form-group'>
+          <label class='pull-left'>Hours of Extension:</label>
+            <input type='number' name='hours' id='hours' min='1' required="1" class='form-control'>
+          </div> -->
             <div class='form-group'>
             <label class='pull-left'>Reason for Revertion:</label>
               <textarea name='reason' required="1" class='form-control' style='resize: none' rows='4'></textarea>

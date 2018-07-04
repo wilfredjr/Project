@@ -58,7 +58,7 @@ if(!empty($_POST)){
 			// var_dump($inputs);
 			// die;
 
-			$con->beginTransaction();	
+			
 			$date = new DateTime();
 
 			$date_applied=date_format($date, 'Y-m-d');
@@ -69,6 +69,7 @@ if(!empty($_POST)){
 			$date_applied=date_format($date, 'Y-m-d');
 
 			if ($proj_details['manager_id']==$employee_id) {
+				$con->beginTransaction();	
 				$params=array(
 					'proj_id'=>$inputs['id'],
 					'requested_employee_id'=>$inputs['employee_id'],
@@ -112,6 +113,7 @@ if(!empty($_POST)){
 
 			}
 			else {
+					$con->beginTransaction();	
 					$params=array(
 					'proj_id'=>$inputs['id'],
 					'requested_employee_id'=>$inputs['employee_id'],
@@ -128,7 +130,6 @@ if(!empty($_POST)){
 					$con->myQuery("INSERT INTO project_requests (project_id,employee_id,manager_id,status_id,modification_type,date_filed,requested_employee_id,designation_id,admin_id,step_id) VALUES (:proj_id,:employee_id,:manager,:status_id,:mod_type,:date_filed,:requested_employee_id,:designation,:admin,:step_id)",$params);
 
 					$con->commit();	
-
 					// $emp_name=getEmpDetails($inputs['employee_id']);
 					// $proj = $proj_details['name'];
 

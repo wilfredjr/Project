@@ -5,7 +5,7 @@ if (!isLoggedIn()) {
     die();
 }
 
-if (!AllowUser(array(1,4))) {
+if (!AllowUser(array(4))) {
     redirect("index.php");
 }
     makeHead("Users");

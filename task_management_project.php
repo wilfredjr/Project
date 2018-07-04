@@ -29,7 +29,7 @@
         Task Management
         </a>
         <div class="row"><br>
-            <form action="" method="" class="form-horizontal" id="frmclear">
+            <form action="" method="" class="form-horizontal" id="frmclear" onsubmit="return validate(this)">
                 <div class='form-group'>
                     <label class="col-md-3 control-label">Date Applied Start *</label>
                     <div class="col-md-3">
@@ -96,7 +96,7 @@
                               <th class='text-center'>Employee Name</th>
                               <th class='text-center date-td'>Date Start</th>
                               <th class='text-center date-td'>Date End</th>
-                              <th class='text-center'>Manager</th>
+                              <th class='text-center'>Current Approver</th>
                               <th class='text-center' width="50%">Work to Do</th>
                               <th class='text-center'>Status</th>
                               <th class='text-center'>Reason</th>
@@ -156,6 +156,17 @@ $(document).ready(function ()
               dttable.ajax.reload();
               //console.log(dttable);
       }
+
+
+   function validate(frm) {
+
+    if(Date.parse($("#start_date").val()) > Date.parse($("#end_date").val())){
+      alert("Date Start cannot be greater than Date End.");
+      return false;
+    }
+
+    return true;
+  }
 </script>
 
 <?php

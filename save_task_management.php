@@ -27,15 +27,33 @@
 				$errors.=$value;
 			}
 		}
-
+			$phase_now=$inputs['phase_id'];
+			$phase_stat=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($inputs['id'],$inputs['phase_id']))->fetch(PDO::FETCH_ASSOC);
+			 $sent=$con->myQuery("SELECT id FROM project_phase_request WHERE project_id=? AND (request_status_id=1 OR request_status_id=3) AND ((project_phase_id='$phase_now')AND(type='comp'))",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
+			 if(!empty($sent)){
+			 	$errors.="Cannot submit task/s. Phase already subject for completion. <br>";
+			 }
+			$date_now=new datetime();
+			$date_now=$date_now->format("Y-m-d");
+			$date_now=strtotime($date_now);
 #CHECK DATES
 
 	#START DATE LESS THAN END DATE
+		if((strtotime($inputs['date_start'])==0)OR(strtotime($inputs['date_end'])==0)) {
+			$errors.='Check date format. <br>';
+		}else{
 		$startdate = strtotime($inputs['date_start']);
 		$enddate = strtotime($inputs['date_end']);
+
+		if($phase_stat['status_id']=='1'){
+				if($startdate<$date_now){
+					$errors .= 'Please check start date. <br/>';
+				}
+			}
+
 		if ($enddate < $startdate)
 		{
-			$errors .= 'Please check dates selected. <br/>';
+			$errors .= 'Please check end date. <br/>';
 		}
 
 		$s_date=new datetime($inputs['date_start']);
@@ -68,6 +86,7 @@
 		        $woweekends1++;
 		    }
 		}
+	}
 
 	// 	foreach ($inputs['employees_id'] as $employee_id) {
 	// 	$validate_date=$con->myQuery("SELECT ptd.id, ptd.project_task_id, pt.employee_id, pt.request_status_id, ptd.date AS date_task FROM project_task_dates ptd INNER JOIN project_task pt ON pt.id=ptd.project_task_id WHERE pt.employee_id=? AND (pt.request_status_id!=4  OR pt.request_status_id!=5) AND pt.project_id=? and pt.project_phase_id=?",array($employee_id,$inputs['id'],$inputs['phase_id']));
@@ -134,7 +153,9 @@
 
 					$inputs['requestor_id'] = $_SESSION[WEBAPP]['user']['employee_id'];
 					if($inputs['manager_id']==$inputs['requestor_id']){
-						$st=2;
+						$step_id=3;
+					}else{
+						$step_id=2;
 					}
 					$params=array(
 					"employee"=>$employee_id,
@@ -142,9 +163,11 @@
 					"phase_id"=>$inputs['phase_id'],
 					"date_start"=>$date_s,
 					"date_end"=>$date_e,
-					"manager_id"=>$inputs['manager_id'],
+					"manager"=>$inputs['manager_id'],
 					"w"=>$inputs['worked_done'],
 					"stats"=>$st,
+					"step_id"=>$step_id,
+					"admin"=>$inputs['admin_id'],
 					"requestor_id" => $inputs['requestor_id']
 					);
 					$con->myQuery("INSERT INTO
@@ -158,7 +181,9 @@
 									request_status_id,
 									requestor_id,
 									manager_id,
-									worked_done
+									worked_done,
+									admin_id,
+									step_id
 								) VALUES(
 									:employee,
 									:project_id,
@@ -168,8 +193,10 @@
 									CURDATE(),
 									:stats,
 									:requestor_id,
-									:manager_id,
-									:w
+									:manager,
+									:w,
+									:admin,
+									:step_id
 								)",$params);
 
 				$project_task_id=$con->lastInsertId();
@@ -206,40 +233,40 @@
 				    }
 				}
 
-				$inputs['requestor_id'] = $_SESSION[WEBAPP]['user']['employee_id'];
-					if($inputs['manager_id']==$inputs['requestor_id']){
-					$phase_stat=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($inputs['id'],$inputs['phase_id']))->fetch(PDO::FETCH_ASSOC);
-					$params1=array(
-					"employee"=>$employee_id,
-					"project_id"=>$inputs['id'],
-					"phase_id"=>$inputs['phase_id'],
-					"date_start"=>$date_s,
-					"date_end"=>$date_e,
-					"manager_id"=>$inputs['manager_id'],
-					"w"=>$inputs['worked_done'],
-					"stats"=>$phase_stat['status_id']
-					);
-					$con->myQuery("INSERT INTO
-								project_task_list(
-									employee_id,
-									project_id,
-									project_phase_id,
-									date_start,
-									date_end,
-									status_id,
-									manager_id,
-									worked_done
-								) VALUES(
-									:employee,
-									:project_id,
-									:phase_id,
-									DATE_FORMAT(:date_start,'%Y-%m-%d'),
-									DATE_FORMAT(:date_end,'%Y-%m-%d'),
-									:stats,
-									:manager_id,
-									:w
-								)",$params1);
-					}
+				// $inputs['requestor_id'] = $_SESSION[WEBAPP]['user']['employee_id'];
+				// 	if($inputs['manager_id']==$inputs['requestor_id']){
+				// 	$phase_stat=$con->myQuery("SELECT status_id FROM project_phase_dates WHERE project_id=? AND project_phase_id=?",array($inputs['id'],$inputs['phase_id']))->fetch(PDO::FETCH_ASSOC);
+				// 	$params1=array(
+				// 	"employee"=>$employee_id,
+				// 	"project_id"=>$inputs['id'],
+				// 	"phase_id"=>$inputs['phase_id'],
+				// 	"date_start"=>$date_s,
+				// 	"date_end"=>$date_e,
+				// 	"manager_id"=>$inputs['manager_id'],
+				// 	"w"=>$inputs['worked_done'],
+				// 	"stats"=>$phase_stat['status_id']
+				// 	);
+				// 	$con->myQuery("INSERT INTO
+				// 				project_task_list(
+				// 					employee_id,
+				// 					project_id,
+				// 					project_phase_id,
+				// 					date_start,
+				// 					date_end,
+				// 					status_id,
+				// 					manager_id,
+				// 					worked_done
+				// 				) VALUES(
+				// 					:employee,
+				// 					:project_id,
+				// 					:phase_id,
+				// 					DATE_FORMAT(:date_start,'%Y-%m-%d'),
+				// 					DATE_FORMAT(:date_end,'%Y-%m-%d'),
+				// 					:stats,
+				// 					:manager_id,
+				// 					:w
+				// 				)",$params1);
+				// 	}
 		}
 			//die;
 // echo "<pre>";

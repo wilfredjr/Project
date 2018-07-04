@@ -19,9 +19,6 @@ $columns = array(
     array( 'db' => 'phase_name','dt' => ++$index ,'formatter'=>function ($d, $row) {
         return htmlspecialchars($d);
     }),
-    array( 'db' => 'manager','dt' => ++$index ,'formatter'=>function ($d, $row) {
-        return htmlspecialchars($d);
-    }),
     array( 'db' => 'type','dt' => ++$index ,'formatter'=>function ($d, $row) {
         if($row['type']=='comp'){
         return 'Phase Completion';}
@@ -29,10 +26,22 @@ $columns = array(
             return 'Phase Revertion';
         }
     }),
-     array( 'db' => 'request_status','dt' => ++$index ,'formatter'=>function ($d, $row) {
-        return htmlspecialchars($d);
+    array( 'db' => 'step_id','dt' => ++$index ,'formatter'=>function ($d, $row) {
+        if($row['step_id']=='2'){
+        return htmlspecialchars($row['manager']);
+        }elseif($row['step_id']=='3'){
+        return htmlspecialchars($row['admin']);
+        }elseif($row['step_id']=='1'){
+        return htmlspecialchars($row['team_lead']);
+        }
     }),
     array( 'db' => 'comment','dt' => ++$index ,'formatter'=>function ($d, $row) {
+        return htmlspecialchars($d);
+    }),
+    array( 'db' => 'employee','dt' => ++$index ,'formatter'=>function ($d, $row) {
+        return htmlspecialchars($d);
+    }),
+    array( 'db' => 'request_status','dt' => ++$index ,'formatter'=>function ($d, $row) {
         return htmlspecialchars($d);
     }),
     array( 'db' => 'reason','dt' => ++$index ,'formatter'=>function ($d, $row) {
@@ -48,6 +57,7 @@ $columns = array(
               if(!empty($current['id'])){
                 $action_buttons.="<a href='download_file.php?id={$current['id']}&type=bf' class='btn btn-default'><span class='fa fa-download'></span></a>";
             }
+            if($row['employee_id']==$_SESSION[WEBAPP]['user']['employee_id']):
             if($row['request_status_id']=="3"):
                 $action_buttons.="<button class='btn btn-sm btn-info'  title='Query Request' onclick='query(\"{$row['id']}\")'><span  class='fa fa-question'></span></button>";
             endif;
@@ -57,7 +67,7 @@ $columns = array(
                 $action_buttons.="<input type='hidden' name='type' value='bug'>";
                 $action_buttons.=" <button class='btn btn-sm btn-danger' value='phase' title='Cancel Request'><span class='fa fa-trash'></span></button></form>";
             endif;
-
+          endif;
             return $action_buttons;
         }
     ),
@@ -71,7 +81,7 @@ $order = SSP::order($_GET, $columns);
 
 $where = SSP::filter($_GET, $columns, $bindings);
 if(!empty($_GET['id'])){
-    $whereAll="ppr.employee_id='$employee_id' AND ppr.bug_list_id=".$_GET['id'];
+    $whereAll="ppr.bug_list_id=".$_GET['id'];
 }else{
     $whereAll="";
 }
@@ -146,8 +156,11 @@ $join_query=" JOIN request_status rs ON ppr.request_status_id=rs.id
 JOIN employees e ON ppr.manager_id=e.id JOIN project_bug_phase pp ON pp.id=ppr.bug_phase_id";
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT ppr.id,ppr.reason,ppr.comment, ppr.project_id,ppr.type,ppr.request_status_id,pp.name as phase_name,ppr.bug_phase_id,ppr.bug_list_id, rs.name AS request_status, ppr.date_filed,
-(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) WHERE e.id=ppr.manager_id) AS manager
+$complete_query="SELECT ppr.id,ppr.reason,ppr.comment, ppr.project_id,ppr.type,ppr.request_status_id,pp.name as phase_name,ppr.bug_phase_id,ppr.bug_list_id, rs.name AS request_status, ppr.date_filed, ppr.step_id, ppr.employee_id,
+(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=ppr.manager_id) AS manager,
+(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=ppr.admin_id) AS admin,
+(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=ppr.team_lead_id) AS team_lead,
+(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=ppr.employee_id) AS employee
 FROM project_bug_request ppr {$join_query} {$where} {$order} {$limit}";
 
 $data=$con->myQuery($complete_query, $bindings)->fetchAll();

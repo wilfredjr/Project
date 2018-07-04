@@ -66,7 +66,7 @@
                     <div class="box box-primary">
                         <div class="box-body">
                             <div class="row">
-                                <div class="col-sm-12 text-right" style="margin-top: 10px; margin-bottom: 10px">
+                           <!--      <div class="col-sm-12 text-right" style="margin-top: 10px; margin-bottom: 10px">
                                     <form class="" method="POST" onsubmit="return approve_all()" action="approve_all.php">
                                         <input type="hidden" name="approve_project_name">
                                         <input type="hidden" name="approve_employee_id">
@@ -75,7 +75,7 @@
                                         <input type="hidden" name="type" value='task_management_approval'>
                                         <button class="btn btn-flat btn-success" title="Approve All Requests"><span class="ion ion-checkmark-round"></span> Approve All</button>
                                     </form>
-                                </div>
+                                </div> -->
                                 <div class="col-sm-12">
 
                                     <table id='ResultTable' class='table table-bordered table-striped'>
@@ -147,7 +147,7 @@
     function approve_all() {
         if (confirm('Are you sure you want to approve all requests?')) {
             $("input[name='approve_project_name']").val($("select[name='project_name']").val());
-            $("input[name='approve_request_id1']").val($("select[name='request_id1']").val());
+            $("input[name='approve_request_id1']").val($("select[name='employee_id1']").val());
             $("input[name='approve_start_date']").val($("input[name='date_start']").val());
             $("input[name='approve_end_date']").val($("input[name='date_end']").val());
             return true;

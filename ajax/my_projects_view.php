@@ -43,6 +43,9 @@ $columns = array(
     array( 'db' => 'designation','dt' => ++$index ,'formatter'=>function ($d, $row) {
         return htmlspecialchars($d);
     }),
+    array( 'db' => 'date_assigned','dt' => ++$index ,'formatter'=>function ($d, $row) {
+        return htmlspecialchars($d);
+    }),
    
      array(
         'db'        => 'id',
@@ -62,6 +65,7 @@ $columns = array(
              $action_buttons.="<input type='hidden' name='designation' value={$row['des_id']}>";
             $action_buttons.="<input type='hidden' name='project_name' value='{$row['project_name']}'>";
             //$action_buttons.="<button class='btn btn-sm btn-danger'><span class='fa fa-remove'></span></button>&nbsp;";
+            if($row['emplo_id']==$row['admin_id']){}else{
             if($row['project_status_id']=='1'||$row['project_status_id']=='3'||$row['project_status_id']=='4'){
                 if($manage['is_manager']=='1'){
                     if(($row['emplo_id']==$_SESSION[WEBAPP]['user']['employee_id'])||($row['team_lead_ba']=='1')||($row['team_lead_dev']=='1')){
@@ -83,6 +87,7 @@ $columns = array(
                     }
                 }
             }
+        }
             return $action_buttons;
            
         })
@@ -154,7 +159,7 @@ $join_query=" INNER JOIN projects p ON pe.project_id=p.id
 LEFT JOIN project_designation pd ON pe.designation_id=pd.id ";
 
 $bindings=jp_bind($bindings);
-$complete_query="SELECT p.name as project_name, pe.project_id as proj_id, p.manager_id as manager_id, pe.employee_id as emplo_id, p.id,pe.is_team_lead_ba as team_lead_ba,pe.is_team_lead_dev as team_lead_dev,(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pe.employee_id) AS emp_name,pe.is_manager as manager,project_status_id,is_manager,pd.name as designation,pe.designation_id as des_id
+$complete_query="SELECT p.name as project_name,pe.date_assigned, pe.project_id as proj_id, p.manager_id as manager_id, pe.employee_id as emplo_id, p.id,pe.is_team_lead_ba as team_lead_ba,pe.is_team_lead_dev as team_lead_dev,(SELECT CONCAT(e.first_name,' ',e.middle_name,' ',e.last_name) FROM employees e WHERE e.id=pe.employee_id) AS emp_name,pe.is_manager as manager,project_status_id,is_manager,pd.name as designation,pe.designation_id as des_id,p.employee_id as admin_id
 FROM projects_employees pe {$join_query} {$where} {$order} {$limit}";
 
 $data=$con->myQuery($complete_query, $bindings)->fetchAll();

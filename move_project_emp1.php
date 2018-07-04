@@ -43,7 +43,7 @@ else{
 	try {
 		  // $audit_details=$con->myQuery("SELECT employee_name,ot_date,orig_time_in,orig_time_out,adj_time_in,adj_time_out FROM vw_employees_ot_adjustments WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
         $current_employee=$_SESSION[WEBAPP]['user']['employee_id'];
-                $current=$con->myQuery("SELECT id,first_approver_date,second_approver_date,third_approver_date,first_approver_id,second_approver_id,third_approver_id,modification_type,project_id,requested_employee_id,employee_id,manager_id,designation_id,step_id,admin_id FROM  project_requests WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
+                $current=$con->myQuery("SELECT id,first_approver_date,second_approver_date,third_approver_date,first_approver_id,second_approver_id,third_approver_id,modification_type,project_id,requested_employee_id,employee_id,manager_id,designation_id,step_id,admin_id,date_filed FROM  project_requests WHERE id=?",array($inputs['id']))->fetch(PDO::FETCH_ASSOC);
                 $date = new DateTime();
 
                 $date_removed=date_format($date, 'Y-m-d');
@@ -65,10 +65,11 @@ else{
                             $param=array(
                             "project_id"=>$current['project_id'],
                             "employee_id"=>$current['requested_employee_id'],
-                            'designation'=>$current['designation_id']
+                            'designation'=>$current['designation_id'],
+                            'date_assigned'=>$current['date_filed']
                             );
 
-                            $con->myQuery("INSERT INTO projects_employees (project_id,employee_id,designation_id) VALUES (:project_id,:employee_id,:designation)",$param);
+                            $con->myQuery("INSERT INTO projects_employees (project_id,employee_id,designation_id,date_assigned) VALUES (:project_id,:employee_id,:designation,:date_assigned)",$param);
                             $param1=array(
                             "project_id"=>$current['project_id'],
                             "employee_id"=>$current['requested_employee_id'],
@@ -77,7 +78,48 @@ else{
                             'designation'=>$current['designation_id']
                             );
                             $con->myQuery("INSERT INTO project_employee_history (project_id,employee_id,start_date,added_by,designation_id) VALUES (:project_id,:employee_id,:start_date,:added_by_id,:designation)",$param1);
-                            $con->myQuery("UPDATE project_requests SET status_id = 2 WHERE id=?",array($current['id']));  
+                            $con->myQuery("UPDATE project_requests SET status_id = 2 WHERE id=?",array($current['id']));
+                            // if($current['designation_id']=='1'){
+                            //      $emp_count=$con->myQuery("SELECT COUNT(id) as id FROM projects_employees WHERE designation_id=1 AND project_id=?",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+                            //      $hours=$con->myQuery("SELECT man_hours FROM  projects WHERE id=?",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+                            //      $dev_start=$con->myQuery("SELECT date_start FROM  project_phase_dates WHERE project_id=? AND project_phase_id=3",array($current['project_id']))->fetch(PDO::FETCH_ASSOC);
+                            //      if(!empty($dev_start)){
+                            //         $dev_start_date=$dev_start['date_start'];
+                                    
+                            //         $daystoadd=($hours['man_hours']/(8*($emp_count['id'])));
+                            //                                 if (is_float($daystoadd)){
+                            //                                     $fordate=floor($daystoadd)+1;
+                            //                                 }else{
+                            //                                     $fordate=$daystoadd;
+                            //                                 }
+                            //                                     $phase2 = new DateTime($date_start['date_end']);
+                            //                                 $t = $phase2->getTimestamp();
+                            //                                     $addDay = 86400;
+                            //                                     do{
+                            //                                     $try=date('Y-m-d', ($t+$addDay));
+                            //                                             $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                            //                                     $nextDay = date('w', ($t+$addDay));
+                            //                                         $t = $t+$addDay;}
+                            //                                     while($nextDay == 0 || $nextDay == 6 || !empty($holiday));
+                            //                                     $phase3_start=date('Y-m-d',$t);
+                            //                                 for($i=0; $i<$fordate-1; $i++){
+                            //                                     $addDay = 86400;
+                            //                                     $try=date('Y-m-d', ($t+$addDay));
+                            //                                             $holiday= $con->myQuery("SELECT holiday_name, holiday_category FROM holidays WHERE holiday_date=?", array($try))->fetch(PDO::FETCH_ASSOC);
+                            //                                     $nextDay = date('w', ($t+$addDay));
+                            //                                     if($nextDay == 0 || $nextDay == 6 || !empty($holiday)) {
+                            //                                         $i--;
+                            //                                     }
+                            //                                     $t = $t+$addDay;
+                            //                                 }
+                            //                                 $phase3=date('Y-m-d',$t);
+
+                            //         $con->myQuery("UPDATE project_phase_dates SET temp_date_end = ? WHERE project_id=? AND project_phase_id='2'",array($date_approved,$current['id']));
+                            //      }
+
+                            //  }
+
+
                         }elseif($current['modification_type']=='0'){
                             $get_start_date=$con->myQuery("SELECT id, employee_id, project_id, start_date FROM project_employee_history WHERE employee_id=".$current['requested_employee_id'] . " AND project_id=".$current['project_id']);
                             while($rows =$get_start_date->fetch(PDO::FETCH_ASSOC)):
@@ -88,7 +130,6 @@ else{
                             
                             endwhile;
                             
-                            
                             $con->myQuery("UPDATE projects_employees SET is_deleted=1 WHERE project_id=".($current['project_id'])." AND employee_id=".($current['requested_employee_id']));
 
                             if (!empty($project_history_id)) {
@@ -98,6 +139,10 @@ else{
                         }
                     }
                     $con->commit(); 
+                    $emp=$con->myQuery("SELECT COUNT(pe.id) AS id FROM projects_employees pe JOIN projects p ON p.id=pe.project_id WHERE pe.employee_id=? AND pe.is_deleted=0 AND p.project_status_id!=2",array($current['requested_employee_id']))->fetch(PDO::FETCH_ASSOC);
+                    $counted=(8/$emp['id']);
+                    if($counted<1){$counted=1;}
+                    $con->myQuery("UPDATE projects_employees SET hours=? WHERE employee_id=?",array($counted,$current['requested_employee_id']));
                      Alert("Project Employee Request approved succesfully.","success");
                         break;
                     case 'reject':
